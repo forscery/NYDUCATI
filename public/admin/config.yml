@@ -2,6 +2,8 @@ backend:
   name: github
   repo: forscery/NYDUCATI
   branch: main
+  base_url: https://nyducati.hidden-silence-47e4.workers.dev
+  auth_endpoint: auth
 publish_mode: editorial_workflow
 media_folder: public/uploads
 public_folder: /uploads
