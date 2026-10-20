@@ -1,0 +1,7 @@
+---
+import { youtubeId } from '../lib/youtube.mjs';
+const {url, caption = ''} = Astro.props;
+const id = youtubeId(url);
+---
+{id && <figure class="story-video"><iframe src={`https://www.youtube-nocookie.com/embed/${id}`} title={caption || 'NYDUCATI trip video'} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>{caption && <figcaption>{caption}</figcaption>}<a href={`https://www.youtube.com/watch?v=${id}`} target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a></figure>}
+<style>.story-video{max-width:900px;margin:2rem auto;padding:0 1rem}.story-video iframe{display:block;width:100%;aspect-ratio:16/9;border:0}.story-video figcaption{margin:.75rem 0}.story-video a{font-size:.875rem}</style>

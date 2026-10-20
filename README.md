@@ -29,4 +29,4 @@ No hosting account has been linked. No subscription or DNS change has been made.
 
 Only eight sample pages are imported. Google Photos originals have not been downloaded or transcoded. Eight covers are local; inline photographs still reference Blogger/Google. Full archive migration, original-media processing, and production SEO checks remain outstanding. The logo uses supplied artwork; a licensed Reflex Pro Regular webfont can be set in branding settings.
 
-Hosting choice is pending a cost review. Netlify configuration is provided as an option, not a commitment. Cloudflare Pages is another option, requiring a separate Decap OAuth service setup.
+Cloudflare Pages Free is the selected hosting target. See CLOUDFLARE-SETUP.md for the remaining account and OAuth steps. Netlify configuration above is retained as an unused alternative.
