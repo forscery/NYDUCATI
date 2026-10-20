@@ -1,0 +1,19 @@
+---
+import Layout from '../layouts/Layout.astro';
+import posts from '../lib/posts.js';
+import config from '../../site.config.json';
+import Hero from '../components/Hero.astro';
+export function getStaticPaths(){return posts.map((post,index)=>({params:{path:post.path.slice(1)},props:{post,index:post.order}}));}
+const {post,index}=Astro.props;
+const isTrip=post.order<5;
+const hero=post.hero || config.articleHeroes.find(h=>h.path===post.path) || config.home.hero;
+const roman=['I','II','III','IV','V'];
+---
+<Layout title={post.title} description={post.excerpt} canonical={post.path}>
+<Hero {...hero} title={post.title.replace(/^[IVX]+\s+/,'')} subtitle="Words & photography by Tigh Loughhead" eyebrow={isTrip?'THE ITALIAN LAKES / CHAPTER '+roman[index]+' OF V / 2015':'NYDUCATI / FROM THE ARCHIVE'} scrollHref="#article" scrollLabel={isTrip?'Read the story':'Explore the collection'}/>
+<div id="article" class="article-top"><a href={isTrip?'/journeys/italian-lakes/':'/'}>← {isTrip?'The Italian Lakes':'Home'}</a><span>{isTrip?'CHAPTER '+roman[index]+' OF V':'FROM THE ARCHIVE'}</span></div>
+{isTrip && <nav class="chapter-bar" aria-label="Trip installments">{posts.filter(p=>p.order<5).map((p,i)=><a href={p.path} aria-current={i===index?'page':undefined}><span>{roman[i]}</span><small>{['Milan','Italy → Switzerland','Maggiore & Varese','Lake Como','Return to Milan'][i]}</small></a>)}</nav>}
+{index===5 && <a class="collection-feature" href="/journeys/italian-lakes/"><img src="/assets/cover-4.jpg" alt="Italian Lakes landscape"/><div><p class="eyebrow">EXPLORE THE FIVE-PART JOURNEY</p><h2>The Italian Lakes</h2><p>Italy & Switzerland · 2015</p><span>Read the collection ↗</span></div></a>}
+<div class="article-layout">{isTrip && <aside class="margin-note"><span>THE ITALIAN LAKES</span><b>{roman[index]} <i>/ V</i></b><p>A motorcycle journey<br/>by Tigh Loughhead</p><a href="/journeys/italian-lakes/">All five chapters ↗</a></aside>}<article class={'prose '+(!isTrip?'collection-prose':'')} set:html={post.body}/></div>
+{isTrip && <nav class="next-prev" aria-label="Continue the trip">{index>0?<a href={posts.find(p=>p.order===index-1)?.path}><small>← PREVIOUS CHAPTER</small><h3>{posts.find(p=>p.order===index-1)?.title.replace(/^[IVX]+\s+/,'')}</h3></a>:<a href="/journeys/italian-lakes/"><small>THE COMPLETE JOURNEY</small><h3>Explore the Italian Lakes</h3></a>}{index<4?<a href={posts.find(p=>p.order===index+1)?.path}><small>NEXT CHAPTER →</small><h3>{posts.find(p=>p.order===index+1)?.title.replace(/^[IVX]+\s+/,'')}</h3></a>:<a href="/p/tighs-ducati-trips.html"><small>KEEP EXPLORING →</small><h3>Tigh’s Motorcycle Trips</h3></a>}</nav>}
+</Layout>

@@ -1,0 +1,13 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import posts from '../../lib/posts.js';
+import config from '../../../site.config.json';
+import Hero from '../../components/Hero.astro';
+const roman=['I','II','III','IV','V'];
+---
+<Layout title="The Italian Lakes — five-part motorcycle journey">
+<Hero {...config.journey.hero} title="The Italian Lakes. By motorcycle." subtitle="From Milan into the lakes of northern Italy and Switzerland—and back again." eyebrow="A JOURNEY IN FIVE CHAPTERS / 2015" scrollHref="#chapters" scrollLabel="Explore the chapters"/>
+<div class="article-top"><a href="/p/tighs-ducati-trips.html">← Tigh’s Motorcycle Trips</a><span>ITALY / SWITZERLAND · 2015</span></div>
+<div class="journey-intro"><p class="eyebrow">THE COMPLETE JOURNEY</p><p>Five original stories by Tigh Loughhead.<br/>Follow the trip in order, one chapter at a time.</p></div>
+<div class="chapter-list" id="chapters">{posts.filter(p=>p.order<5).map((p,i)=><a href={p.path}><span class="ordinal">{roman[i]}</span><img src={'/assets/cover-'+(i+1)+'.jpg'} alt="" loading="lazy"/><div><p class="eyebrow">CHAPTER {roman[i]}</p><h2>{p.title.replace(/^[IVX]+\s+/,'')}</h2><p>{p.excerpt.slice(0,140).replace(/\s+\S*$/,'')}…</p></div><span class="arrow">↗</span></a>)}</div>
+</Layout>

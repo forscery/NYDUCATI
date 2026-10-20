@@ -1,0 +1,19 @@
+{
+  "name": "nyducati-prototype",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1",
+    "build": "astro build",
+    "preview": "astro preview --host 127.0.0.1",
+    "postbuild": "node scripts/finalize.mjs",
+    "prebuild": "node scripts/prepare-cms.mjs",
+    "predev": "node scripts/prepare-cms.mjs",
+    "test": "node scripts/check-search.mjs"
+  },
+  "dependencies": {
+    "astro": "7.4.1",
+    "decap-cms": "3.17.1",
+    "marked": "17.0.6"
+  }
+}

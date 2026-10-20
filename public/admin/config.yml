@@ -1,0 +1,103 @@
+backend:
+  name: github
+  repo: forscery/NYDUCATI
+  branch: main
+publish_mode: editorial_workflow
+media_folder: public/uploads
+public_folder: /uploads
+collections:
+  - name: posts
+    label: Stories and pages
+    folder: content/posts
+    create: true
+    extension: json
+    format: json
+    slug: '{{slug}}'
+    summary: '{{title}}'
+    fields:
+      - {name: title, label: Title, widget: string}
+      - {name: path, label: Page URL, widget: string, pattern: ['^/(?:[a-zA-Z0-9_-]+/)*[a-zA-Z0-9_-]+(?:\.html|/)$', 'Use /stories/your-story/ or an original .html URL'], hint: Keep existing URLs unchanged. New stories can use /stories/your-story/.}
+      - {name: excerpt, label: Short description, widget: text}
+      - {name: order, label: Display order, widget: number, value_type: int, default: 100, hint: Keep imported items 0–7 in their current order. Use 100 or higher for new stories.}
+      - {name: draft, label: Hide from website, widget: boolean, default: false}
+      - {name: format, widget: hidden, default: markdown}
+      - {name: images, label: Additional photographs, widget: list, required: false, field: {name: image, label: Photograph, widget: image}}
+      - name: hero
+        label: Full-screen banner
+        widget: object
+        required: false
+        fields:
+          - {name: image, label: Photograph, widget: image}
+          - {name: titleColor, label: Title and logo color, widget: select, options: [white, black], default: white}
+          - {name: position, label: Photo focal point, widget: string, default: center}
+          - {name: overlay, label: Photo shading, widget: number, value_type: float, min: 0, max: 0.85, step: 0.05, default: 0.55}
+      - {name: body, label: Story, widget: markdown, hint: Imported articles contain original HTML. Use Source mode when editing these to preserve their layout. New stories support the visual editor.}
+  - name: settings
+    label: Site settings
+    files:
+      - name: site
+        label: Navigation and photo banners
+        file: site.config.json
+        format: json
+        fields:
+          - {name: title, label: Site title, widget: string}
+          - {name: tagline, label: Tagline, widget: string}
+          - name: branding
+            label: Logo
+            widget: object
+            fields:
+              - {name: logoImage, label: Logo image, widget: image}
+              - {name: logoFontFamily, label: Logo typeface, widget: string, default: Reflex Pro Regular}
+              - {name: logoWebfontUrl, label: Reflex Pro Regular webfont file URL, widget: string, required: false}
+          - name: navigation
+            label: Navigation
+            widget: list
+            fields:
+              - {name: label, label: Menu label, widget: string}
+              - {name: href, label: Link, widget: string}
+          - name: home
+            label: Homepage
+            widget: object
+            fields:
+              - {name: showFeaturedJourney, label: Show banner, widget: boolean}
+              - {name: showStoryGrid, label: Show masonry grid, widget: boolean}
+              - {name: storyOrder, label: Story order, widget: list, field: {name: id, label: Story index, widget: number, value_type: int}}
+              - name: hero
+                label: Homepage photo banner
+                widget: object
+                fields:
+                  - {name: title, label: Title, widget: string}
+                  - {name: titleEmphasis, label: Italic words in title, widget: string, required: false}
+                  - {name: titleBreakBeforeEmphasis, label: Start italic words on a new line, widget: boolean, default: false, required: false}
+                  - {name: subtitle, label: Subtitle, widget: text}
+                  - &image {name: image, label: Banner photograph, widget: image}
+                  - &titleColor {name: titleColor, label: Title color, widget: select, options: [{label: White, value: white}, {label: Black, value: black}], default: white}
+                  - &position {name: position, label: Photo focal point, widget: string, default: center, hint: 'Examples: center, 50% 30%, left center'}
+                  - &overlay {name: overlay, label: Contrast overlay, widget: number, value_type: float, min: 0, max: 0.85, step: 0.05, default: 0.55}
+          - name: articleHeroes
+            label: Article and page banners
+            widget: list
+            summary: '{{fields.path}} — {{fields.titleColor}} title'
+            fields:
+              - {name: path, label: Existing article or page URL, widget: string}
+              - *image
+              - *titleColor
+              - *position
+              - *overlay
+          - name: journey
+            label: Featured journey
+            widget: object
+            fields:
+              - {name: title, label: Title, widget: string}
+              - {name: subtitle, label: Subtitle, widget: text}
+              - {name: path, label: Journey URL, widget: string}
+              - {name: cover, label: Cover photograph, widget: image}
+              - name: hero
+                label: Journey photo banner
+                widget: object
+                fields:
+                  - {name: titleEmphasis, label: Italic words in title, widget: string, required: false}
+                  - *image
+                  - *titleColor
+                  - *position
+                  - *overlay

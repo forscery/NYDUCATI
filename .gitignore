@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.astro/
+reference/
+*.tar.gz
+.DS_Store
+
+public/admin/decap-cms.js
+.openai/
+.netlify/
+
+public/admin/vendor/

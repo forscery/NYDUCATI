@@ -1,0 +1,33 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Search the archive" overlayHeader={false}>
+<section class="search-page"><p class="eyebrow">THE NYDUCATI ARCHIVE</p><h1>Find your next story.</h1>
+<form action="/search/" class="search-page-form" role="search"><label class="sr-only" for="search-query">Search stories, places and motorcycles</label><input id="search-query" name="q" type="search" placeholder="Try Bellagio, BMW or Switzerland" maxlength="200"/><button class="button" type="submit">Search ↗</button></form>
+<p id="search-status" role="status" aria-live="polite">Search the articles and collections in this preview.</p><div id="search-results"></div><noscript><p>Search needs JavaScript. You can browse <a href="/p/tighs-ducati-trips.html">Tigh’s Motorcycle Trips</a> instead.</p></noscript>
+</section>
+</Layout>
+<script>
+import {searchEntries,excerptAround} from '../lib/search.mjs';
+const input=document.querySelector<HTMLInputElement>('#search-query')!;
+const form=document.querySelector<HTMLFormElement>('.search-page-form')!;
+const results=document.querySelector('#search-results')!;
+const status=document.querySelector('#search-status')!;
+let indexPromise:Promise<any[]>|undefined;
+let revision=0;
+async function runSearch(query:string){
+ const current=++revision;results.replaceChildren();
+ if(!query.trim()){status.textContent='Search the articles and collections in this preview.';return;}
+ status.textContent='Searching…';
+ try{
+  indexPromise??=fetch('/search-index.json').then(r=>{if(!r.ok)throw new Error('Search index unavailable');return r.json();}).catch(e=>{indexPromise=undefined;throw e;});
+  const entries=await indexPromise;if(current!==revision)return;
+  const matches=searchEntries(entries,query);
+  status.textContent=matches.length?`${matches.length} ${matches.length===1?'result':'results'} for “${query}”`:`No results for “${query}”. Try a place, motorcycle or shorter phrase.`;
+  matches.forEach(entry=>{const article=document.createElement('article');article.className='search-result';const title=document.createElement('h2');const link=document.createElement('a');link.href=entry.path;link.textContent=entry.title;title.append(link);const excerpt=document.createElement('p');excerpt.textContent=excerptAround(entry.text,query);article.append(title,excerpt);results.append(article);});
+ }catch{if(current===revision)status.textContent='Search could not load. Please try again.';}
+}
+input.value=new URLSearchParams(location.search).get('q')?.slice(0,200)||'';runSearch(input.value);
+form.addEventListener('submit',e=>{e.preventDefault();const q=input.value.trim();history.pushState({},'',q?'/search/?q='+encodeURIComponent(q):'/search/');runSearch(q);});
+window.addEventListener('popstate',()=>{input.value=new URLSearchParams(location.search).get('q')?.slice(0,200)||'';runSearch(input.value);});
+</script>

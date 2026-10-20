@@ -1,0 +1,11 @@
+---
+const {title,titleEmphasis='',titleBreakBeforeEmphasis=false,subtitle,eyebrow,image,alt='',titleColor='white',position='center',overlay=0.5,ctaHref,ctaLabel,scrollHref='#article',scrollLabel='Read the story'}=Astro.props;
+const emphasisIndex=titleEmphasis?title.indexOf(titleEmphasis):-1;
+const tone=titleColor==='black'?'black':'white';
+const strength=Math.max(0,Math.min(0.85,Number(overlay)||0));
+---
+<section class={'photo-hero title-'+tone} style={`--hero-overlay:${strength};--hero-position:${position}`} aria-label={title}>
+<img class="hero-background" src={image} alt={alt} fetchpriority="high"/>
+<div class="hero-shade" aria-hidden="true"></div>
+<div class="hero-inner"><p class="eyebrow">{eyebrow}</p><h1>{emphasisIndex>=0 ? <>{title.slice(0,emphasisIndex)}{titleBreakBeforeEmphasis && <br/>}<em>{titleEmphasis}</em>{title.slice(emphasisIndex+titleEmphasis.length)}</> : title}</h1>{subtitle&&<p class="hero-subtitle">{subtitle}</p>}{ctaHref&&<a class="button" href={ctaHref}>{ctaLabel}<span aria-hidden="true">↗</span></a>}<a class="hero-scroll" href={scrollHref}>{scrollLabel}<span aria-hidden="true">↓</span></a></div>
+</section>

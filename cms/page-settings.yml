@@ -1,0 +1,71 @@
+# Decap collection schema, ready to merge after the repository/login backend is connected.
+# This is not a connected editor or a replacement for the current site.config.json.
+name: settings
+label: Site settings
+files:
+  - name: site
+    label: Navigation and photo banners
+    file: site.config.json
+    format: json
+    fields:
+      - {name: title, label: Site title, widget: string}
+      - {name: tagline, label: Tagline, widget: string}
+      - name: branding
+        label: Logo
+        widget: object
+        fields:
+          - {name: logoImage, label: Logo image, widget: image}
+          - {name: logoFontFamily, label: Logo typeface, widget: string, default: Reflex Pro Regular}
+          - {name: logoWebfontUrl, label: Reflex Pro Regular webfont file URL, widget: string, required: false}
+      - name: navigation
+        label: Navigation
+        widget: list
+        fields:
+          - {name: label, label: Menu label, widget: string}
+          - {name: href, label: Link, widget: string}
+      - name: home
+        label: Homepage
+        widget: object
+        fields:
+          - {name: showFeaturedJourney, label: Show banner, widget: boolean}
+          - {name: showStoryGrid, label: Show masonry grid, widget: boolean}
+          - {name: storyOrder, label: Story order, widget: list, field: {name: id, label: Story index, widget: number, value_type: int}}
+          - name: hero
+            label: Homepage photo banner
+            widget: object
+            fields:
+              - {name: title, label: Title, widget: string}
+              - {name: titleEmphasis, label: Italic words in title, widget: string, required: false}
+              - {name: titleBreakBeforeEmphasis, label: Start italic words on a new line, widget: boolean, default: false, required: false}
+              - {name: subtitle, label: Subtitle, widget: text}
+              - &image {name: image, label: Banner photograph, widget: image}
+              - &titleColor {name: titleColor, label: Title color, widget: select, options: [{label: White, value: white}, {label: Black, value: black}], default: white}
+              - &position {name: position, label: Photo focal point, widget: string, default: center, hint: 'Examples: center, 50% 30%, left center'}
+              - &overlay {name: overlay, label: Contrast overlay, widget: number, value_type: float, min: 0, max: 0.85, step: 0.05, default: 0.55}
+      - name: articleHeroes
+        label: Article and page banners
+        widget: list
+        summary: '{{fields.path}} — {{fields.titleColor}} title'
+        fields:
+          - {name: path, label: Existing article or page URL, widget: string}
+          - *image
+          - *titleColor
+          - *position
+          - *overlay
+      - name: journey
+        label: Featured journey
+        widget: object
+        fields:
+          - {name: title, label: Title, widget: string}
+          - {name: subtitle, label: Subtitle, widget: text}
+          - {name: path, label: Journey URL, widget: string}
+          - {name: cover, label: Cover photograph, widget: image}
+          - name: hero
+            label: Journey photo banner
+            widget: object
+            fields:
+              - {name: titleEmphasis, label: Italic words in title, widget: string, required: false}
+              - *image
+              - *titleColor
+              - *position
+              - *overlay

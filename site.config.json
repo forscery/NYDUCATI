@@ -1,0 +1,115 @@
+{
+  "title": "NYDUCATI",
+  "tagline": "Motorcycle journeys. New York & beyond.",
+  "navigation": [
+    {
+      "label": "Tigh’s Motorcycle Trips",
+      "href": "/p/tighs-ducati-trips.html"
+    },
+    {
+      "label": "Superbikes",
+      "href": "/p/blog-page_15.html"
+    },
+    {
+      "label": "Motorcycle Museums",
+      "href": "/p/tigh-loughhead-visits-motorcycle-museums.html"
+    }
+  ],
+  "home": {
+    "showFeaturedJourney": true,
+    "showStoryGrid": true,
+    "storyOrder": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "hero": {
+      "title": "The Italian Lakes.",
+      "subtitle": "Two motorcycles. Three lakes. The long way around northern Italy and into Switzerland.",
+      "image": "/assets/cover-4.jpg",
+      "titleColor": "white",
+      "position": "center",
+      "overlay": 0.55,
+      "titleEmphasis": "Lakes",
+      "titleBreakBeforeEmphasis": true
+    }
+  },
+  "journey": {
+    "title": "The Italian Lakes",
+    "subtitle": "Five chapters between Italy and Switzerland.",
+    "path": "/journeys/italian-lakes/",
+    "cover": "/assets/cover-4.jpg",
+    "hero": {
+      "image": "/assets/cover-4.jpg",
+      "titleColor": "white",
+      "position": "center",
+      "overlay": 0.55,
+      "titleEmphasis": "Lakes"
+    }
+  },
+  "branding": {
+    "logoImage": "/assets/nyducati-wordmark.svg",
+    "logoFontFamily": "Reflex Pro Regular",
+    "logoWebfontUrl": null
+  },
+  "articleHeroes": [
+    {
+      "path": "/2015/11/renting-bikes-in-milan-italian-lakes-region.html",
+      "image": "/assets/cover-1.jpg",
+      "titleColor": "white",
+      "position": "center",
+      "overlay": 0.6
+    },
+    {
+      "path": "/2015/12/ii-around-couple-of-lakes-from-italy-to.html",
+      "image": "/assets/cover-2.jpg",
+      "titleColor": "white",
+      "position": "center",
+      "overlay": 0.6
+    },
+    {
+      "path": "/2015/12/iii-lago-lugano-around-lago-maggiore-to.html",
+      "image": "/assets/cover-3.jpg",
+      "titleColor": "white",
+      "position": "center",
+      "overlay": 0.6
+    },
+    {
+      "path": "/2015/12/iv-circumnavigating-lake-como-on-bmw.html",
+      "image": "/assets/cover-4.jpg",
+      "titleColor": "white",
+      "position": "center",
+      "overlay": 0.6
+    },
+    {
+      "path": "/2015/12/v-bellagio-bring-bikes-back-to-milan.html",
+      "image": "/assets/cover-5.jpg",
+      "titleColor": "white",
+      "position": "center",
+      "overlay": 0.6
+    },
+    {
+      "path": "/p/tighs-ducati-trips.html",
+      "image": "/assets/cover-6.jpg",
+      "titleColor": "white",
+      "position": "center",
+      "overlay": 0.6
+    },
+    {
+      "path": "/p/blog-page_15.html",
+      "image": "/assets/cover-7.jpg",
+      "titleColor": "white",
+      "position": "center",
+      "overlay": 0.6
+    },
+    {
+      "path": "/p/tigh-loughhead-visits-motorcycle-museums.html",
+      "image": "/assets/cover-8.jpg",
+      "titleColor": "white",
+      "position": "center",
+      "overlay": 0.6
+    }
+  ]
+}
