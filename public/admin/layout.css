@@ -1,0 +1,20 @@
+/* Layout targets Decap's field labels, not generated Emotion class names.
+   Keep React's field tree intact so drafts, validation and image insertion work. */
+div:has(> div[aria-label] > div > label[for^="body-field-"]) {max-width:1600px!important;padding:12px 24px 48px;}
+div:has(> div[aria-label] > div > label[for^="body-field-"]) > div[aria-label]:has(> div > label[for^="title-field-"]) input {font-size:28px;line-height:1.3;font-weight:600;}
+@media (min-width:1100px) {
+ div:has(> div[aria-label] > div > label[for^="body-field-"]) {display:grid;grid-template-columns:minmax(0,3fr) minmax(280px,1fr);column-gap:28px;align-items:start;}
+ div:has(> div[aria-label] > div > label[for^="body-field-"]) > div[aria-label] {grid-column:2;min-width:0;margin-top:16px;}
+ div:has(> div[aria-label] > div > label[for^="body-field-"]) > div[aria-label]:has(> div > label[for^="title-field-"]) {grid-column:1 / -1;grid-row:1;margin-top:20px;}
+ div:has(> div[aria-label] > div > label[for^="body-field-"]) > div[aria-label]:has(> div > label[for^="body-field-"]) {grid-column:1;grid-row:2 / span 30;position:sticky;top:12px;max-height:calc(100vh - 115px);overflow:auto;}
+ div:has(> div[aria-label] > div > label[for^="body-field-"]) > div[aria-label]:has(> div > label[for^="body-field-"]) [contenteditable="true"] {min-height:62vh;}
+ /* Opening the separate preview narrows the form; keep its fields usable. */
+ .SplitPane div:has(> div[aria-label] > div > label[for^="body-field-"]) {display:block;padding:12px 8px 40px;}
+ .SplitPane div:has(> div[aria-label] > div > label[for^="body-field-"]) > div[aria-label]:has(> div > label[for^="body-field-"]) {position:static;max-height:none;}
+}
+@media (max-width:1099px) {
+ div:has(> div[aria-label] > div > label[for^="body-field-"]) {display:flex;flex-direction:column;padding:12px 4px 32px;}
+ div:has(> div[aria-label] > div > label[for^="body-field-"]) > div[aria-label] {width:100%;order:2;}
+ div:has(> div[aria-label] > div > label[for^="body-field-"]) > div[aria-label]:has(> div > label[for^="title-field-"]) {order:0;}
+ div:has(> div[aria-label] > div > label[for^="body-field-"]) > div[aria-label]:has(> div > label[for^="body-field-"]) {order:1;}
+}

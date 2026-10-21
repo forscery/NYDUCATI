@@ -51,5 +51,7 @@ CMS.registerEditorComponent({
 const en=CMS.getLocale('en');if(en)CMS.registerLocale('en',{...en,editor:{...en.editor,editorWidgets:{...en.editor.editorWidgets,markdown:{...en.editor.editorWidgets.markdown,addComponent:'Insert image'}}}});
 // Start this editor upgrade in visual mode; subsequent toggles remain the user's choice.
 try{if(!localStorage.getItem('nyducati-visual-editor-v2')){localStorage.setItem('cms.md-mode','rich_text');localStorage.setItem('nyducati-visual-editor-v2','1');}}catch{}
+// Give the writing form the full window initially. The eye button still opens preview.
+try{if(!localStorage.getItem('nyducati-writing-layout-v1')){localStorage.setItem('cms.right-pane','none');localStorage.setItem('nyducati-writing-layout-v1','1');}}catch{}
 CMS.init();
 })();
