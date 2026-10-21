@@ -39,3 +39,18 @@ Host on YouTube and embed in posts. Keep originals. Avoid another lossy conversi
 Google Photos: a future official Picker API integration can let the owner search and select photos, including searches by album title. It requires one-time Google project/OAuth configuration and explicit selection; it is not an unattended whole-library crawler or a public album downloader.
 
 iCloud Photos: use the synced Mac System Photo Library through the OS photo browser when available, or export originals from Photos to a local folder. Apple's native PhotoKit could support a richer local Mac utility; a generic website should not promise a direct iCloud web-library picker. No Google/iCloud account integration was added in this change.
+
+## Video, animation and repair records
+
+YouTube is the default for video delivery. The CMS's 20 MiB upload cap is an application setting, not an R2 object limit. R2 can store much larger objects, but storage alone does not provide adaptive video streaming/transcoding. Preserve original video until YouTube playback has been checked. GIF animation is preserved unchanged; a large GIF can remain large.
+
+Before cleaning imported HTML, audit the original JSON records (each containing path/body and publication date when known):
+
+```
+node scripts/audit-media.mjs migration/originals content/posts /tmp/media-audit.json
+node scripts/audit-media.mjs migration/originals content/posts /tmp/media-audit.json --manifest=/path/to/conversion/manifest.json --apply
+```
+
+The first command only reports. The second adds editor-only mediaIssues to matching posts, including failed conversion records. This is an offline reference audit, not a playback test. Missing files and untested embeds are distinguished. Unknown filenames/dates are left unknown; post dates are explicitly labeled. Existing resolutions survive reruns. Review the report's unmatchedPosts list before publishing. JSON source must retain the original HTML; a Blogger XML ingestion stage is still required for a complete export. Mark resolved only after placing the replacement in the article or YouTube list and checking playback. The replacement URL field records the repair; it does not insert media automatically.
+
+Public Instagram posts/reels and Facebook posts/videos are candidates for a future URL-based embed field with fallback links. That field is not implemented yet. Stories are not treated as permanent embeds: preserve your own original media, or use a link. Privacy settings, removed content and disabled embedding can prevent third-party playback.

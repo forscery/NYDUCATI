@@ -165,6 +165,22 @@ collections:
               - standard
               - wide
             default: standard
+      - name: mediaIssues
+        label: Media needing attention (editor only)
+        widget: list
+        required: false
+        summary: '{{fields.status}} — {{fields.filename}}'
+        fields:
+          - {name: id, widget: hidden, required: false}
+          - name: status
+            widget: select
+            options: [needs_review, conversion_failed, missing, resolved]
+            default: needs_review
+          - {name: filename, label: Original filename, widget: string, required: false}
+          - {name: source, label: Original URL or video ID, widget: text, required: false}
+          - {name: date, label: Date reference, widget: string, required: false, hint: 'Label whether this is a capture date or post date. Unknown dates remain blank.'}
+          - {name: reason, label: What needs attention, widget: text, required: false}
+          - {name: replacementUrl, label: Replacement media or YouTube URL, widget: string, required: false}
       - name: videos
         label: YouTube videos below the article
         widget: list
@@ -374,6 +390,22 @@ collections:
               - standard
               - wide
             default: standard
+      - name: mediaIssues
+        label: Media needing attention (editor only)
+        widget: list
+        required: false
+        summary: '{{fields.status}} — {{fields.filename}}'
+        fields:
+          - {name: id, widget: hidden, required: false}
+          - name: status
+            widget: select
+            options: [needs_review, conversion_failed, missing, resolved]
+            default: needs_review
+          - {name: filename, label: Original filename, widget: string, required: false}
+          - {name: source, label: Original URL or video ID, widget: text, required: false}
+          - {name: date, label: Date reference, widget: string, required: false, hint: 'Label whether this is a capture date or post date. Unknown dates remain blank.'}
+          - {name: reason, label: What needs attention, widget: text, required: false}
+          - {name: replacementUrl, label: Replacement media or YouTube URL, widget: string, required: false}
       - name: videos
         label: YouTube videos below the article
         widget: list
