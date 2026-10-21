@@ -1,6 +1,6 @@
 {
-  "title": "NYDUCATI",
-  "tagline": "Motorcycle journeys. New York & beyond.",
+  "title": "NYDUCATI ",
+  "tagline": "Tigh Loughhead's Motorcycle journeys out of New York City & beyond.",
   "navigation": [
     {
       "label": "Tigh’s Motorcycle Trips",
@@ -27,7 +27,7 @@
     ],
     "hero": {
       "title": "The Italian Lakes.",
-      "subtitle": "Two motorcycles. Three lakes. The long way around northern Italy and into Switzerland.",
+      "subtitle": "Lago Como. Lago Lugano. Lago Maggiore. The long way around northern Italy and into Switzerland.",
       "image": "/assets/cover-4.jpg",
       "titleColor": "white",
       "position": "center",
