@@ -53,4 +53,6 @@ Tags use a single comma/newline-separated text box. The CMS uses direct saves to
 
 The pinned Decap 3.17.1 toolbar is adapted in prepare-cms.mjs with a guarded replacement that fails the build if its boundaries change. It retains native form validation, preSave hooks, persistence and error reporting. Review this adapter when upgrading Decap.
 
-The image picker prepares JPEG/PNG/WebP as WebP locally (2400-pixel maximum, quality 0.86, no upscaling); GIF/AVIF pass through. Camera RAW is not supported. Single-image fields explicitly disable multiple selection. Legacy image arrays are normalized when rendering so one such value cannot block deployment.
+The image picker prepares JPEG/PNG/WebP as WebP locally (2400-pixel maximum, quality 0.86, no upscaling); GIF/AVIF pass through. HEIC/HEIF now converts to still WebP through native decoding or a lazy-loaded local decoder; camera RAW is not supported. Single-image fields explicitly disable multiple selection. Legacy image arrays are normalized when rendering so one such value cannot block deployment.
+
+See MEDIA-WORKFLOW.md for HEIC handling, batch conversion commands, measured migration planning and the remaining R2 rewrite step.

@@ -12,3 +12,7 @@ const a=bundle.indexOf(start),b=bundle.indexOf(end,a);
 if(b<0)throw new Error('Decap toolbar boundary missing.');
 bundle=bundle.slice(0,a)+'renderSimpleControls=()=>window.NYDUCATI.renderPublishingControls(this.props)'+bundle.slice(b);
 fs.writeFileSync(vendor,bundle);
+
+// Lazy-loaded HEIC decoder: shipped locally, never fetched from a public CDN at runtime.
+fs.copyFileSync('node_modules/heic-to/dist/heic-to.js','public/admin/vendor/heic-to.js');
+fs.copyFileSync('node_modules/heic-to/LICENSE','public/admin/vendor/heic-to-LICENSE.txt');

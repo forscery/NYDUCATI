@@ -3,3 +3,5 @@
 /* Keep image insertion discoverable in Decap's visual toolbar. */
 button[title="Insert image"], button[title="Add Component"] {width:auto!important;display:inline-flex!important;align-items:center;gap:6px;padding:6px 10px!important;white-space:nowrap;}
 button[title="Insert image"]::after, button[title="Add Component"]::after {content:"Insert image";font-size:14px;font-weight:600;}
+
+.ny-prepared {display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:14px 0;}.ny-prepared figure {margin:0;}.ny-prepared img {width:100%;height:180px;object-fit:contain;background:#eee;}.ny-prepared figcaption {font-size:12px;overflow-wrap:anywhere;margin-top:6px;}

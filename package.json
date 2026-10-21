@@ -9,15 +9,17 @@
     "postbuild": "node scripts/finalize.mjs",
     "prebuild": "node scripts/prepare-cms.mjs && node scripts/prepare-history.mjs",
     "predev": "node scripts/prepare-cms.mjs && node scripts/prepare-history.mjs",
-    "test": "node scripts/check-search.mjs && node scripts/check-auth.mjs && node scripts/check-cms.mjs && node scripts/check-location.mjs && node scripts/check-authoring.mjs",
+    "test": "node scripts/check-search.mjs && node scripts/check-auth.mjs && node scripts/check-cms.mjs && node scripts/check-location.mjs && node scripts/check-authoring.mjs && node scripts/check-image-conversion.mjs",
     "media:estimate": "node scripts/media-cost.mjs"
   },
   "dependencies": {
     "astro": "7.4.1",
     "decap-cms": "3.17.1",
+    "heic-to": "1.6.6",
     "js-yaml": "5.5.0",
     "marked": "17.0.6",
     "sanitize-html": "2.18.1",
+    "sharp": "0.35.5",
     "turndown": "7.2.4"
   }
 }

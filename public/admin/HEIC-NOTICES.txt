@@ -1,0 +1,6 @@
+NYDUCATI HEIC conversion uses heic-to 1.6.6, with libheif 1.23.6 and its HEVC decoder. The decoder is loaded only when native HEIC decoding is unavailable. These components are distributed under their upstream licenses, including LGPL-3.0 for heic-to and libheif. No modifications were made to the supplied decoder bundle.
+License: /admin/vendor/heic-to-LICENSE.txt
+heic-to source and build instructions: https://github.com/hoppergee/heic-to/tree/v1.6.6
+Published package (including supplied JS sources): https://registry.npmjs.org/heic-to/-/heic-to-1.6.6.tgz
+libheif corresponding source: https://github.com/strukturag/libheif/releases/tag/v1.23.6
+Decoder build instructions and dependent decoder versions: https://github.com/hoppergee/heic-to
