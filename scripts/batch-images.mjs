@@ -6,7 +6,7 @@ if(!input||!out)throw Error('Usage: node scripts/batch-images.mjs INPUT_FOLDER O
 const inputRoot=path.resolve(input),outputRoot=path.resolve(out);if(outputRoot===inputRoot||outputRoot.startsWith(inputRoot+path.sep))throw Error('Choose an output folder outside the input folder.');
 const entries=new Map();
 function add(source,post){if(!source||(!/^https?:\/\//.test(source)&&!path.isAbsolute(source)))return;const item=entries.get(source)||{source,posts:[]};if(post&&!item.posts.includes(post))item.posts.push(post);entries.set(source,item);}
-async function scan(dir){for(const f of await fs.readdir(dir,{withFileTypes:true})){const full=path.join(dir,f.name);if(f.isDirectory()){await scan(full);continue;}if(/\.(jpe?g|png|webp|heic|heif|avif|gif)$/i.test(f.name)){add(full);continue;}if(!/\.json$/i.test(f.name))continue;const post=JSON.parse(await fs.readFile(full,'utf8'));if(typeof post.body!=='string')continue;const parser=new Parser({onopentag:(tag,a)=>{if(tag==='img')add(a.src,post.path||full);}});parser.write(post.format==='html'?post.body:marked.parse(post.body));parser.end();for(const image of [post.hero?.image,post.seo?.socialImage].flat()){if(typeof image==='string')add(image,post.path||full);}}}
+async function scan(dir){for(const f of await fs.readdir(dir,{withFileTypes:true})){const full=path.join(dir,f.name);if(f.isDirectory()){await scan(full);continue;}if(/\.(jpe?g|png|webp|heic|heif|avif|gif)$/i.test(f.name)){add(full);continue;}if(!/\.json$/i.test(f.name))continue;const post=JSON.parse(await fs.readFile(full,'utf8'));if(typeof post.body!=='string')continue;const parser=new Parser({onopentag:(tag,a)=>{if(tag==='img'){add(a.src,post.path||full);add(a['data-src'],post.path||full);for(const candidate of (a.srcset||'').split(','))add(candidate.trim().split(/\s+/)[0],post.path||full);}}});parser.write(post.format==='html'?post.body:marked.parse(post.body));parser.end();for(const image of [post.hero?.image,post.seo?.socialImage].flat()){if(typeof image==='string')add(image,post.path||full);}}}
 await scan(inputRoot);await fs.mkdir(outputRoot,{recursive:true});const manifestPath=path.join(outputRoot,'manifest.json');let old={};try{old=JSON.parse(await fs.readFile(manifestPath,'utf8'));}catch(e){if(e.code!=='ENOENT')throw e;}
 const previous=new Map((old.items||[]).map(i=>[i.source,i]));const items=[];const seen=new Map();let failures=0;
 for(const item of entries.values()){
@@ -28,7 +28,7 @@ for(const item of entries.values()){
   await fs.writeFile(path.join(outputRoot,output),prepared);seen.set(sourceHash,record);items.push(record);
  }catch(e){failures++;items.push({...item,status:'error',error:e.message});}
  // Checkpoint every item so an interrupted job can resume.
- await fs.writeFile(manifestPath,JSON.stringify({version:1,items},null,2));
+ await fs.writeFile(manifestPath+'.tmp',JSON.stringify({version:1,items},null,2));await fs.rename(manifestPath+'.tmp',manifestPath);
 }
 const unique=new Map(items.filter(i=>i.output).map(i=>[i.output,i]));const report={version:1,mode:convert?'converted':'inventory',sourceCount:items.length,uniquePreparedFiles:unique.size,preparedBytes:[...unique.values()].reduce((n,i)=>n+i.preparedBytes,0),failures,items};
 // Preserve conversion progress when someone reruns inventory mode.

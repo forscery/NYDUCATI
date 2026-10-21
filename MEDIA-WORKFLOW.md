@@ -22,7 +22,7 @@ The output folder must be outside the input folder. Sources are never modified. 
 
 Check sources flagged as low resolution. Never upscale to pretend that detail has been recovered. Keep acceptable Blogger originals and seek Google/iCloud originals only for exceptions. Animated GIF/WebP inputs are preserved rather than silently flattened.
 
-This stage does NOT upload to R2, rewrite posts, or publish anything. The next stage must upload reviewed outputs, confirm availability and rewrite image references while preserving captions, links and ordering. It should use the manifest to resume and produce a review report before publication.
+Conversion does not publish anything. The upload/rewrite stage below uploads reviewed outputs, verifies returned bytes, and writes reviewable copies of posts. Originals remain unchanged.
 
 Measure storage after conversion:
 
@@ -54,3 +54,35 @@ node scripts/audit-media.mjs migration/originals content/posts /tmp/media-audit.
 The first command only reports. The second adds editor-only mediaIssues to matching posts, including failed conversion records. This is an offline reference audit, not a playback test. Missing files and untested embeds are distinguished. Unknown filenames/dates are left unknown; post dates are explicitly labeled. Existing resolutions survive reruns. Review the report's unmatchedPosts list before publishing. JSON source must retain the original HTML; a Blogger XML ingestion stage is still required for a complete export. Mark resolved only after placing the replacement in the article or YouTube list and checking playback. The replacement URL field records the repair; it does not insert media automatically.
 
 Public Instagram posts/reels and Facebook posts/videos are candidates for a future URL-based embed field with fallback links. That field is not implemented yet. Stories are not treated as permanent embeds: preserve your own original media, or use a link. Privacy settings, removed content and disabled embedding can prevent third-party playback.
+
+
+## Upload and stage migrated posts
+
+Requires Node 22.22+ and installed project dependencies. Run from the repository root. This stage uses the existing authenticated CMS upload endpoint; no R2 credentials or new Cloudflare service are required. It does not publish or commit posts.
+
+1. Run batch conversion above. Review sizes and errors in `manifest.json`.
+2. Preview the upload plan without network calls:
+
+```
+node scripts/migrate-media.mjs PREPARED_FOLDER content/posts STAGING_FOLDER
+```
+
+3. Provide a GitHub token with access to write this repository through the local `NYDUCATI_GITHUB_TOKEN` environment variable. Do not paste it into chat, put it in a command argument, or save it in a tracked file. For an interactive zsh terminal, enter it without displaying it:
+
+```
+read -rs 'NYDUCATI_GITHUB_TOKEN?GitHub token: '
+export NYDUCATI_GITHUB_TOKEN
+node scripts/migrate-media.mjs PREPARED_FOLDER content/posts STAGING_FOLDER --upload
+unset NYDUCATI_GITHUB_TOKEN
+```
+
+The default target is the current NYDUCATI Worker. Override with `--site=https://YOUR-SITE` only for a trusted deployment of the same upload handler. The token is sent only to that target, redirects are refused, and it is never stored in the report. Do not run two jobs against the same staging folder simultaneously.
+
+4. Inspect `STAGING_FOLDER/report.json` and `STAGING_FOLDER/posts/`. Uploaded objects have verified SHA-256 checksums; progress is saved in `uploads.json`. Repeating the upload run rechecks saved objects and skips the upload when still correct. Identical prepared bytes share an upload. Verification downloads the prepared image, so it uses your connection and a storage read.
+5. Review staged post changes, then copy the approved post JSON files into the content repository and run the normal build/publish workflow. Publication is deliberately separate. Use the report's post list, not a blind recursive copy of a staging folder reused across different input sets.
+
+HTML image src/data-src/srcset and exact matching image links, Markdown image destinations/reference definitions, hero images and SEO images are replaced. Captions, post URLs, tags and dates are preserved. Unrelated prose and code blocks remain unchanged. An original-size link is replaced only if that exact source also appears in the conversion manifest; this avoids silently swapping a higher-resolution original for a different thumbnail. CSS background images and unusual custom markup require manual review.
+
+Failed conversions, upload errors, oversized images and checksum failures retain their original references and produce editor-only repair records in the staged post. Review every failure before publication; the utility exits with a nonzero status if any remain. Known post dates are labeled as post dates, not capture dates. The standalone original-media audit remains necessary for legacy video embeds.
+
+The report gives exact unique prepared bytes and file count before upload. Pricing is not hardcoded: use the cost estimator with account-wide storage usage. No live R2 upload has been proven by the automated fixture tests; the Italian Lakes pilot is the next live acceptance test. This utility accepts the CMS JSON format, not a raw Blogger XML export.

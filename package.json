@@ -9,7 +9,7 @@
     "postbuild": "node scripts/finalize.mjs",
     "prebuild": "node scripts/prepare-cms.mjs && node scripts/prepare-history.mjs",
     "predev": "node scripts/prepare-cms.mjs && node scripts/prepare-history.mjs",
-    "test": "node scripts/check-search.mjs && node scripts/check-auth.mjs && node scripts/check-cms.mjs && node scripts/check-location.mjs && node scripts/check-authoring.mjs && node scripts/check-image-conversion.mjs",
+    "test": "node scripts/check-search.mjs && node scripts/check-auth.mjs && node scripts/check-cms.mjs && node scripts/check-location.mjs && node scripts/check-authoring.mjs && node scripts/check-image-conversion.mjs && node scripts/check-migration.mjs",
     "media:estimate": "node scripts/media-cost.mjs"
   },
   "dependencies": {

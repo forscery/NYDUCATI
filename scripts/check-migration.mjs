@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';import os from 'node:os';import path from 'node:path';import crypto from 'node:crypto';
+import {migrate,rewriteBody} from './migrate-media.mjs';
+const old='https://photos.example/a.jpg',url='https://site.example/media/images/photo-'+'a'.repeat(64)+'.webp',map=new Map([[old,url]]);
+assert.equal(rewriteBody(`<a href="${old}"><img src="${old}" alt="caption"></a>`,'html',map).body,`<a href="${url}"><img src="${url}" alt="caption"></a>`);
+const markdown=`Text ${old}\n\n![caption](${old} "title")\n\n\`![code](${old})\`\n\n\`\`\`\n![code](${old})\n\`\`\`\n\n![ref][photo]\n\n[photo]: ${old}\n`;
+const rewritten=rewriteBody(markdown,'markdown',map).body;assert.ok(rewritten.includes(`Text ${old}`));assert.ok(rewritten.includes(`![caption](${url} "title")`));assert.ok(rewritten.includes('`![code]('+old+')`'));assert.ok(rewritten.includes(`[photo]: ${url}`));
+const root=await fs.mkdtemp(path.join(os.tmpdir(),'nyducati-migration-'));const prepared=path.join(root,'prepared'),posts=path.join(root,'posts'),output=path.join(root,'stage');await fs.mkdir(prepared);await fs.mkdir(posts);
+const bytes=Buffer.from('test prepared bytes'),digest=crypto.createHash('sha256').update(bytes).digest('hex');const live='https://site.example/media/images/photo-'+digest+'.webp';
+await fs.writeFile(path.join(prepared,'photo.webp'),bytes);await fs.writeFile(path.join(prepared,'manifest.json'),JSON.stringify({items:[{source:old,posts:['/post/'],status:'converted',output:'photo.webp',outputHash:digest},{source:'https://photos.example/b.jpg',posts:['/post/'],status:'error',error:'Download failed'}]}));
+const original=JSON.stringify({title:'Test',path:'/post/',format:'markdown',body:markdown,hero:{image:old},tags:['unchanged'],publishedAt:'2015-12-01'});await fs.writeFile(path.join(posts,'post.json'),original);
+let puts=0;const fetcher=async(target,options={})=>{if(options.method==='POST'){puts++;assert.equal(options.headers.Authorization,'Bearer test-secret');return Response.json({url:live});}return new Response(bytes);};
+let report=await migrate({prepared,posts,output,site:'https://site.example',fetcher});assert.equal(puts,0);assert.equal(report.mode,'plan');await assert.rejects(fs.access(path.join(output,'posts/post.json')));
+report=await migrate({prepared,posts,output,site:'https://site.example',upload:true,token:'test-secret',fetcher});assert.equal(puts,1);let post=JSON.parse(await fs.readFile(path.join(output,'posts/post.json')));assert.equal(post.hero.image,live);assert.equal(post.mediaIssues.length,1);assert.deepEqual(post.tags,['unchanged']);assert.equal(await fs.readFile(path.join(posts,'post.json'),'utf8'),original);
+report=await migrate({prepared,posts,output,site:'https://site.example',upload:true,token:'test-secret',fetcher});assert.equal(puts,1);assert.equal(report.reused,1);assert.ok(!JSON.stringify(report).includes('test-secret'));
+await fs.writeFile(path.join(prepared,'photo.webp'),'corrupt');report=await migrate({prepared,posts,output,site:'https://site.example',upload:true,token:'test-secret',fetcher});assert.equal(puts,1);assert.ok(report.failures.some(f=>f.reason.includes('checksum')));post=JSON.parse(await fs.readFile(path.join(output,'posts/post.json')));assert.equal(post.hero.image,old);
+await assert.rejects(migrate({prepared,posts,output:posts,site:'https://site.example'}));
+console.log('PASS: dry run, verified upload, resume, corruption rejection, original preservation, Markdown/HTML rewriting, captions/tags, code/prose preservation and repair flags.');
