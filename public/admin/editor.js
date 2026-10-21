@@ -31,6 +31,8 @@ CMS.editor.onEditorChange(snapshot=>{
 CMS.registerEventListener({name:'preSave',handler:({entry})=>{
  let data=entry.get('data');if(!['post','page'].includes(data.get('kind'))&&!data.get('path'))return data;
  const d=data.toJS();
+ if(Array.isArray(d.hero?.image))data=data.setIn(['hero','image'],d.hero.image[0]||'');
+ if(Array.isArray(d.seo?.socialImage))data=data.setIn(['seo','socialImage'],d.seo.socialImage[0]||'');
  if(!d.publishedAt&&!d.metadataPending&&!d.originalPath)d.publishedAt=today();
  const path=makePath(d,d.path),old=d.originalPath;
  if(!path||!/^\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+(?:\.html|\/)$/.test(path)||/^\/(admin|auth|api|media|tags|archives|posts|search)(\/|$)/.test(path))throw new Error('Use a title or slug such as two-wheel-tuesdays, or a local URL such as /2026/10/two-wheel-tuesdays.html.');

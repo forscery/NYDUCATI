@@ -6,7 +6,9 @@ const files = import.meta.glob('../../content/posts/*.json', { eager:true, impor
 export const hiddenPaths=Object.values(files).filter(p=>p.draft).map(p=>p.path);
 const paths=new Set();
 const posts=Object.entries(files).map(([file,data])=>{
- const p={...data,kind:data.kind||'post',tags:[...new Set(data.tags||[])]};
+ const p={...data,kind:data.kind||'post',tags:[...new Set((data.tags||[]).flatMap(t=>String(t).split(/[,\n]+/)).map(t=>t.trim()).filter(Boolean))]};
+ if(p.hero)p.hero={...p.hero,image:Array.isArray(p.hero.image)?p.hero.image[0]:p.hero.image};
+ if(p.seo)p.seo={...p.seo,socialImage:Array.isArray(p.seo.socialImage)?p.seo.socialImage[0]:p.seo.socialImage};
  if(!validPath(p.path)||paths.has(p.path))throw new Error('Invalid or duplicate content URL: '+p.path);paths.add(p.path);
  if(p.publishedAt&&!/^\d{4}-\d{2}-\d{2}(?:T.*)?$/.test(p.publishedAt))throw new Error('Invalid publication date: '+p.title);
  if(p.publishedAt && Number.isNaN(Date.parse(p.publishedAt)))throw new Error('Invalid publication date: '+p.title);

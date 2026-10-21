@@ -4,7 +4,6 @@ backend:
   branch: main
   base_url: https://nyducati.hidden-silence-47e4.workers.dev
   auth_endpoint: auth
-publish_mode: editorial_workflow
 media_folder: public/uploads
 public_folder: /uploads
 collections:
@@ -70,14 +69,9 @@ collections:
         default: Tigh Loughhead
       - name: tags
         label: Labels / tags
-        widget: list
+        widget: tags-text
         required: false
-        allow_add: true
-        field:
-          name: tag
-          label: Label
-          widget: string
-        hint: Keep existing label spelling. Each label creates a tag archive.
+        hint: 'One text box: separate tags with commas or Enter. Spaces inside a tag are preserved.'
       - name: excerpt
         label: Excerpt
         widget: text
@@ -85,7 +79,8 @@ collections:
       - name: draft
         label: Unpublished — exclude from website
         widget: boolean
-        default: false
+        default: true
+        hint: Use Publish or Revert to draft in the toolbar to change visibility.
       - name: showInFeed
         label: Include in feed, archives and search
         widget: boolean
@@ -106,6 +101,8 @@ collections:
           - name: image
             label: Photograph
             widget: image
+            media_library:
+              allow_multiple: false
           - name: titleColor
             label: Title and logo color
             widget: select
@@ -142,6 +139,8 @@ collections:
             label: Social sharing image
             widget: image
             required: false
+            media_library:
+              allow_multiple: false
           - name: noindex
             label: Exclude from search engines
             widget: boolean
@@ -215,6 +214,8 @@ collections:
     filter:
       field: kind
       value: post
+    preview_path: '{{fields.path}}'
+    preview_path_preserve_slashes: true
   - folder: content/posts
     create: true
     extension: json
@@ -277,14 +278,9 @@ collections:
         default: Tigh Loughhead
       - name: tags
         label: Labels / tags
-        widget: list
+        widget: tags-text
         required: false
-        allow_add: true
-        field:
-          name: tag
-          label: Label
-          widget: string
-        hint: Keep existing label spelling. Each label creates a tag archive.
+        hint: 'One text box: separate tags with commas or Enter. Spaces inside a tag are preserved.'
       - name: excerpt
         label: Excerpt
         widget: text
@@ -292,7 +288,8 @@ collections:
       - name: draft
         label: Unpublished — exclude from website
         widget: boolean
-        default: false
+        default: true
+        hint: Use Publish or Revert to draft in the toolbar to change visibility.
       - name: showInFeed
         label: Include in feed, archives and search
         widget: boolean
@@ -313,6 +310,8 @@ collections:
           - name: image
             label: Photograph
             widget: image
+            media_library:
+              allow_multiple: false
           - name: titleColor
             label: Title and logo color
             widget: select
@@ -349,6 +348,8 @@ collections:
             label: Social sharing image
             widget: image
             required: false
+            media_library:
+              allow_multiple: false
           - name: noindex
             label: Exclude from search engines
             widget: boolean
@@ -422,6 +423,8 @@ collections:
     filter:
       field: kind
       value: page
+    preview_path: '{{fields.path}}'
+    preview_path_preserve_slashes: true
   - name: settings
     label: Site settings
     files:
@@ -443,6 +446,8 @@ collections:
               - name: logoImage
                 label: Logo image
                 widget: image
+                media_library:
+                  allow_multiple: false
               - name: logoFontFamily
                 label: Logo typeface
                 widget: string
@@ -512,6 +517,8 @@ collections:
                   - name: image
                     label: Banner photograph
                     widget: image
+                    media_library:
+                      allow_multiple: false
                   - name: titleColor
                     label: Title color
                     widget: select
@@ -552,6 +559,8 @@ collections:
               - name: image
                 label: Banner photograph
                 widget: image
+                media_library:
+                  allow_multiple: false
               - name: titleColor
                 label: Title color
                 widget: select
@@ -590,6 +599,8 @@ collections:
               - name: cover
                 label: Cover photograph
                 widget: image
+                media_library:
+                  allow_multiple: false
               - name: hero
                 label: Journey photo banner
                 widget: object
@@ -601,6 +612,8 @@ collections:
                   - name: image
                     label: Banner photograph
                     widget: image
+                    media_library:
+                      allow_multiple: false
                   - name: titleColor
                     label: Title color
                     widget: select
@@ -630,3 +643,5 @@ collections:
             hint: Leave OFF during preview. Enable only when the full site is ready for production.
 media_library:
   name: nyducati-r2
+display_url: https://nyducati.hidden-silence-47e4.workers.dev
+site_url: https://nyducati.hidden-silence-47e4.workers.dev

@@ -46,3 +46,11 @@ Use Node 22.22+:
 The cost command inventories actual prepared files and hashes duplicates, then estimates full-month Standard storage and operations with free allowances and billing-unit rounding. Supply existing account usage; defaults assume unused allowances. It does not upload. It excludes Workers, paid transformations, taxes, original-download services and development/AI costs. Recheck rates before bulk migration: https://developers.cloudflare.com/r2/pricing/ (rate snapshot 2026-10-20).
 
 Browser-based editor and authenticated R2 upload must be checked on the live deployment. Local browser automation is unavailable because its security-policy check failed. Automated tests cover CMS configuration, conversion fidelity, auth/media handlers, archives, RSS, redirects, metadata and cost calculations.
+
+## Authoring controls
+
+Tags use a single comma/newline-separated text box. The CMS uses direct saves to main rather than review-status branches. New posts default to draft. Save keeps the current publication state; Publish saves with draft=false; Revert to draft saves with draft=true. Saving an already published post updates it. The toolbar links to its published preview-domain URL; Cloudflare must finish a successful build before changes are visible. Reverting also requires a successful deployment before removal takes effect.
+
+The pinned Decap 3.17.1 toolbar is adapted in prepare-cms.mjs with a guarded replacement that fails the build if its boundaries change. It retains native form validation, preSave hooks, persistence and error reporting. Review this adapter when upgrading Decap.
+
+The image picker prepares JPEG/PNG/WebP as WebP locally (2400-pixel maximum, quality 0.86, no upscaling); GIF/AVIF pass through. Camera RAW is not supported. Single-image fields explicitly disable multiple selection. Legacy image arrays are normalized when rendering so one such value cannot block deployment.

@@ -30,3 +30,13 @@ div:has(> div[aria-label] > div > label[for^="body-field-"]) > div[aria-label]:h
 .ny-location summary {cursor:pointer;}
 .ny-place-results {list-style:none;margin:0;padding:0;}
 .ny-place-results button {width:100%;text-align:left;white-space:normal;}
+.ny-publishing {display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;max-width:780px;font:13px system-ui,sans-serif;}
+.ny-publishing button {border:1px solid #b5b5b5;border-radius:4px;background:#fff;color:#222;padding:8px 12px;cursor:pointer;}
+.ny-publishing button:nth-child(2) {background:#d90000;border-color:#d90000;color:white;}
+.ny-publishing button:disabled {opacity:.45;cursor:default;}
+.ny-publishing a {color:#c00;text-decoration:underline;}
+.ny-publishing small {font-size:10px;color:#555;}
+.ny-publish-state {font-size:11px;}
+
+/* Visibility is controlled by the publishing toolbar, without a second checkbox. */
+div[aria-label]:has(> div > label[for^="draft-field-"]) {display:none;}
