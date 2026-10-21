@@ -93,20 +93,11 @@ collections:
         hint: Turning this off leaves the direct URL public. It is not privacy protection.
       - name: location
         label: Location
-        widget: object
+        widget: place
         required: false
-        fields:
-          - name: name
-            label: Place name
-            widget: string
-            required: false
-          - name: mapUrl
-            label: Map link
-            widget: string
-            required: false
-            pattern:
-              - ^https://|^$
-              - Use an HTTPS map link.
+        hint: >-
+          Search for a town, address, landmark or venue; choose a result to fill in its map link. Manual entry
+          is also available.
       - name: hero
         label: Full-screen photo banner
         widget: object
@@ -309,20 +300,11 @@ collections:
         hint: Turning this off leaves the direct URL public. It is not privacy protection.
       - name: location
         label: Location
-        widget: object
+        widget: place
         required: false
-        fields:
-          - name: name
-            label: Place name
-            widget: string
-            required: false
-          - name: mapUrl
-            label: Map link
-            widget: string
-            required: false
-            pattern:
-              - ^https://|^$
-              - Use an HTTPS map link.
+        hint: >-
+          Search for a town, address, landmark or venue; choose a result to fill in its map link. Manual entry
+          is also available.
       - name: hero
         label: Full-screen photo banner
         widget: object

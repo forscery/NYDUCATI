@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';import {fromJS} from 'immutable';import * as yaml from 'js-yaml';
+let widget,requests=0,fail=false;
+const fetcher=async url=>{requests++;assert.equal(new URL(url).hostname,'photon.komoot.io');if(fail)throw Error('offline');return {ok:true,json:async()=>({features:[{properties:{name:'Ducati Museum',city:'Bologna',country:'Italy'},geometry:{coordinates:[11.2684316,44.5161578]}},{properties:{name:'Invalid'},geometry:{coordinates:[null,null]}}]})};};
+vm.runInNewContext(fs.readFileSync('public/admin/location.js','utf8'),{CMS:{registerWidget:w=>{widget=w;}},window:{h:(tag,props,...children)=>({tag,props,children}),createClass:x=>x},fetch:fetcher,URL,AbortController,setTimeout,clearTimeout});
+const control=widget.controlComponent;let saved;
+const instance={...control,props:{value:fromJS({name:'Original',mapUrl:'https://example.com/map'}),forID:'location',onChange:x=>{saved=x;}},setState(next){Object.assign(this.state,next);}};instance.state=instance.getInitialState();
+assert.equal(instance.state.query,'Original');
+instance.state.query='Ducati Museum Bologna';await instance.search();assert.equal(instance.state.results.length,1);assert.equal(requests,1);
+const result=instance.state.results[0];instance.select(result);assert.equal(saved.name,'Ducati Museum');assert.equal(saved.latitude,44.5161578);assert.match(saved.mapUrl,/mlat=44.5161578/);assert.equal(saved.source,'OpenStreetMap');
+instance.state.query='Ducati Museum Bologna';await instance.search();assert.equal(requests,1,'Repeated query uses cached results');
+instance.props.value=fromJS(saved);instance.edit('name','My museum stop');assert.equal(saved.name,'My museum stop');assert.equal(saved.latitude,44.5161578);
+instance.edit('mapUrl','https://example.com/other-map');assert.equal(saved.latitude,undefined);assert.equal(saved.mapUrl,'https://example.com/other-map');
+fail=true;instance.state.query='Another place';await instance.search();assert.match(instance.state.message,/unavailable/);assert.equal(instance.state.busy,false);assert.equal(instance.render().tag,'div');
+const config=yaml.load(fs.readFileSync('public/admin/config.yml','utf8'));for(const c of config.collections.slice(0,2))assert.equal(c.fields.find(f=>f.name==='location').widget,'place');
+console.log('PASS: place selection, coordinates, map URL, existing-location compatibility, caching, invalid results and manual fallback.');

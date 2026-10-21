@@ -9,7 +9,7 @@
     "postbuild": "node scripts/finalize.mjs",
     "prebuild": "node scripts/prepare-cms.mjs && node scripts/prepare-history.mjs",
     "predev": "node scripts/prepare-cms.mjs && node scripts/prepare-history.mjs",
-    "test": "node scripts/check-search.mjs && node scripts/check-auth.mjs && node scripts/check-cms.mjs",
+    "test": "node scripts/check-search.mjs && node scripts/check-auth.mjs && node scripts/check-cms.mjs && node scripts/check-location.mjs",
     "media:estimate": "node scripts/media-cost.mjs"
   },
   "dependencies": {

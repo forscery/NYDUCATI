@@ -18,3 +18,15 @@ div:has(> div[aria-label] > div > label[for^="body-field-"]) > div[aria-label]:h
  div:has(> div[aria-label] > div > label[for^="body-field-"]) > div[aria-label]:has(> div > label[for^="title-field-"]) {order:0;}
  div:has(> div[aria-label] > div > label[for^="body-field-"]) > div[aria-label]:has(> div > label[for^="body-field-"]) {order:1;}
 }
+.ny-location {padding:12px;border:1px solid #ddd;background:#fff;border-radius:4px;font:14px/1.5 system-ui,sans-serif;}
+.ny-location label {display:block;font-weight:600;margin:10px 0 4px;}
+.ny-location input {width:100%;min-width:0;padding:9px;border:1px solid #aaa;border-radius:3px;font:inherit;}
+.ny-location button {padding:8px 10px;margin:8px 6px 4px 0;background:#f3f3f3;border:1px solid #aaa;border-radius:3px;font:inherit;cursor:pointer;}
+.ny-location button:disabled {opacity:.5;cursor:wait;}
+.ny-location p {margin:8px 0;}
+.ny-location small {display:block;color:#555;margin-top:12px;font-size:11px;}
+.ny-location a {color:#c00;overflow-wrap:anywhere;}
+.ny-location details {margin:10px 0;}
+.ny-location summary {cursor:pointer;}
+.ny-place-results {list-style:none;margin:0;padding:0;}
+.ny-place-results button {width:100%;text-align:left;white-space:normal;}
