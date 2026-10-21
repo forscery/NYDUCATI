@@ -1,0 +1,39 @@
+{
+  "showInFeed": true,
+  "draft": false,
+  "publishedAt": "2026-10-21",
+  "body": "It was the [best of nights](https://nyducati.com), it was the worst of nights.",
+  "path": "/2026/10/my-story-two-wheel-tuesday-html.html",
+  "author": "Tigh Loughhead",
+  "order": 100,
+  "style": {
+    "width": "standard",
+    "imageLayout": "standard"
+  },
+  "kind": "post",
+  "originalPath": "/2026/10/my-story-two-wheel-tuesday-html.html",
+  "format": "markdown",
+  "title": "Bike Night",
+  "videos": [
+    {
+      "url": "https://www.youtube.com/watch?v=4ixvypAI96s&t=12s",
+      "caption": "Tigh Loughhead Desmosedici"
+    }
+  ],
+  "tags": [
+    "bike night, ",
+    "two wheel tuesdays"
+  ],
+  "hero": {
+    "titleColor": "white",
+    "position": "center",
+    "overlay": 0.55,
+    "image": [
+      "https://nyducati.hidden-silence-47e4.workers.dev/media/images/image-1-80292f27a666998e0b3775d18fa53e8c1a1f7357fbb9141a131c8b2ec4928957.webp"
+    ]
+  },
+  "seo": {
+    "noindex": false
+  },
+  "aliases": []
+}
