@@ -1,7 +1,8 @@
 (function(){
 const API=location.origin+'/api/media';
+let mediaContext=null;
 function token(){try{return JSON.parse(localStorage.getItem('decap-cms-user')||'{}').token||'';}catch{return '';}}
-async function api(url,options={}){const r=await fetch(url,{...options,headers:{...options.headers,Authorization:'Bearer '+token()}});const data=await r.json();if(!r.ok)throw new Error(data.error||'Media request failed.');return data;}
+async function api(url,options={}){const r=await fetch(url,{...options,headers:{...options.headers,Authorization:'Bearer '+((mediaContext&&(await mediaContext()).token)||token())}});const data=await r.json();if(!r.ok)throw new Error(data.error||'Media request failed.');return data;}
 async function optimize(file){
  if(!['image/jpeg','image/png','image/webp'].includes(file.type))return file;
  const image=await createImageBitmap(file,{imageOrientation:'from-image'}),scale=Math.min(1,2400/Math.max(image.width,image.height));
@@ -10,7 +11,8 @@ async function optimize(file){
  if(!blob||blob.type!=='image/webp')throw new Error('This browser cannot create WebP. Turn off optimization or use a supported browser.');
  return new File([blob],file.name.replace(/\.[^.]+$/,'')+'.webp',{type:'image/webp'});
 }
-CMS.registerMediaLibrary({name:'nyducati-r2',init:({handleInsert})=>{
+CMS.registerMediaLibrary({name:'nyducati-r2',init:({handleInsert,getMediaLibraryContext})=>{
+ mediaContext=getMediaLibraryContext;
  const dialog=document.createElement('dialog');dialog.className='ny-media';
  dialog.innerHTML='<form method="dialog"><button class="ny-close" aria-label="Close media picker">Close ×</button></form><h2>NYDUCATI photos</h2><p>Upload a photograph or select one already hosted here.</p><label>Choose images <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif,image/gif"></label><label><input class="ny-optimize" type="checkbox" checked> Prepare for web: WebP, maximum 2400 px, no upscaling</label><p class="ny-help">Originals stay on your computer. GIF and AVIF are uploaded unchanged. Maximum upload: 20 MB per file. Uploaded images are public even before the post is published.</p><p class="ny-status" role="status" aria-live="polite"></p><button class="ny-upload" type="button" disabled>Upload selected images</button><div class="ny-grid"></div><button class="ny-more" type="button" hidden>Load more</button>';
  document.body.append(dialog);const input=dialog.querySelector('input[type=file]'),status=dialog.querySelector('.ny-status'),upload=dialog.querySelector('.ny-upload'),grid=dialog.querySelector('.ny-grid'),more=dialog.querySelector('.ny-more');

@@ -30,12 +30,13 @@ collections:
         widget: hidden
         default: post
       - name: path
-        label: URL / slug
+        label: Post URL (automatic; optional override)
         widget: string
-        pattern:
-          - ^/(?:[a-zA-Z0-9_-]+/)*[a-zA-Z0-9_-]+(?:\.html|/)$
-          - Use /stories/my-story/ or an original .html URL.
-        hint: Changing an existing URL adds a redirect from its previous address.
+        hint: >-
+          Generated from the publication year/month and title. You can enter just a custom slug, such as
+          two-wheel-tuesdays, or a complete local path. Saved URLs stay unchanged unless you edit them;
+          changes create redirects.
+        required: false
       - name: originalPath
         label: Last saved URL
         widget: hidden
@@ -54,10 +55,11 @@ collections:
         required: false
         date_format: YYYY-MM-DD
         time_format: false
-        picker_utc: true
+        picker_utc: false
         hint: >-
-          Preserve the original Blogger date. Blank imported dates are awaiting metadata; the year/month in
-          their URL is retained.
+          Defaults to today for new posts. Adjust to backdate a post; its automatic URL follows the year and
+          month. Imported blank dates remain unchanged.
+        default: '{{now}}'
       - name: publishedMonth
         label: Original archive month
         widget: hidden
@@ -213,8 +215,10 @@ collections:
           - rich_text
           - raw
         hint: >-
-          Use the image button to upload to R2 or select a hosted photo. Switch to Markdown for source. The
-          preview also includes a read-only generated HTML view.
+          In Rich text mode, click Insert image → Upload / insert image, then choose a photograph from your
+          computer or R2. The image appears in the article. Markdown shows editable source.
+        editor_components:
+          - image
     name: posts
     label: Posts
     filter:
@@ -242,12 +246,13 @@ collections:
         widget: hidden
         default: page
       - name: path
-        label: URL / slug
+        label: Post URL (automatic; optional override)
         widget: string
-        pattern:
-          - ^/(?:[a-zA-Z0-9_-]+/)*[a-zA-Z0-9_-]+(?:\.html|/)$
-          - Use /stories/my-story/ or an original .html URL.
-        hint: Changing an existing URL adds a redirect from its previous address.
+        hint: >-
+          Generated from the publication year/month and title. You can enter just a custom slug, such as
+          two-wheel-tuesdays, or a complete local path. Saved URLs stay unchanged unless you edit them;
+          changes create redirects.
+        required: false
       - name: originalPath
         label: Last saved URL
         widget: hidden
@@ -266,10 +271,11 @@ collections:
         required: false
         date_format: YYYY-MM-DD
         time_format: false
-        picker_utc: true
+        picker_utc: false
         hint: >-
-          Preserve the original Blogger date. Blank imported dates are awaiting metadata; the year/month in
-          their URL is retained.
+          Defaults to today for new posts. Adjust to backdate a post; its automatic URL follows the year and
+          month. Imported blank dates remain unchanged.
+        default: '{{now}}'
       - name: publishedMonth
         label: Original archive month
         widget: hidden
@@ -425,8 +431,10 @@ collections:
           - rich_text
           - raw
         hint: >-
-          Use the image button to upload to R2 or select a hosted photo. Switch to Markdown for source. The
-          preview also includes a read-only generated HTML view.
+          In Rich text mode, click Insert image → Upload / insert image, then choose a photograph from your
+          computer or R2. The image appears in the article. Markdown shows editable source.
+        editor_components:
+          - image
     name: pages
     label: Pages
     filter:
