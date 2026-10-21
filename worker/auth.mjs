@@ -1,3 +1,4 @@
+import {handleMedia} from './media.mjs';
 const ORIGIN = 'https://nyducati.hidden-silence-47e4.workers.dev';
 const cookieName = '__Host-nyducati-oauth';
 const cookie = value => `${cookieName}=${value}; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=${value ? 600 : 0}`;
@@ -35,4 +36,4 @@ export async function handleAuth(request, env, fetcher=fetch) {
     return new Response(html,{headers:{...headers,'Content-Type':'text/html; charset=utf-8','Set-Cookie':cookie(''),'Content-Security-Policy':`default-src 'none'; script-src 'nonce-${nonce}'; base-uri 'none'; frame-ancestors 'none'`}});
   } catch { return failure('GitHub sign-in is temporarily unavailable. Please try again.',502); }
 }
-export default {async fetch(request,env){const path=new URL(request.url).pathname;return path==='/auth'||path.startsWith('/auth/')?handleAuth(request,env):env.ASSETS.fetch(request);}};
+export default {async fetch(request,env){const path=new URL(request.url).pathname;if(path==='/api/media'||path.startsWith('/media/'))return handleMedia(request,env);return path==='/auth'||path.startsWith('/auth/')?handleAuth(request,env):env.ASSETS.fetch(request);}};

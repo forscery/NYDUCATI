@@ -1,0 +1,15 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';import {execFileSync} from 'node:child_process';import {escapeXML,tagPath} from '../src/lib/model.mjs';
+const config=fs.readFileSync('site.config.json','utf8'),d=JSON.parse(config);d.home.postsPerPage=3;
+const base={title:'CMS integration story',kind:'post',path:'/stories/cms-verification/',originalPath:'/stories/cms-verification/',aliases:['/stories/old-verification/'],publishedAt:'2020-02-03',author:'Test author',tags:['Lake & Alps','Ducati / rides'],excerpt:'A & B',format:'markdown',body:'## A real heading\n\nParagraph with **emphasis**.\n\n![Lake](https://example.com/photo.webp)',draft:false,showInFeed:true,order:100,seo:{title:'Test SEO title',description:'Test description override'},hero:{image:'/assets/cover-1.jpg',titleColor:'black',position:'center',overlay:.2}};
+const fixtures=[base,{...base,title:'Hidden story',path:'/stories/hidden-verification/',aliases:[],showInFeed:false},{...base,title:'Draft story',path:'/stories/draft-verification/',aliases:[],draft:true},{...base,title:'Separate page',kind:'page',path:'/pages/page-verification/',aliases:[]}];
+const files=fixtures.map((_,i)=>`content/posts/test-verification-${i}.json`);
+try{
+ fs.writeFileSync('site.config.json',JSON.stringify(d));fixtures.forEach((p,i)=>fs.writeFileSync(files[i],JSON.stringify(p)));
+ execFileSync('npm',['run','build'],{stdio:'pipe'});
+ const html=fs.readFileSync('dist/stories/cms-verification/index.html','utf8');assert.ok(html.includes('Test SEO title'));assert.ok(html.includes('Test description override'));assert.ok(html.includes('February 3, 2020'));assert.ok(html.includes('photo-hero title-black'));assert.ok(html.includes('<h2>A real heading</h2>'));
+ assert.ok(fs.existsSync('dist'+tagPath('Lake & Alps')+'index.html'));assert.ok(fs.existsSync('dist'+tagPath('Ducati / rides')+'index.html'));assert.ok(fs.existsSync('dist/archives/2020/02/index.html'));assert.ok(fs.existsSync('dist/posts/2/index.html'));assert.ok(!fs.existsSync('dist/stories/draft-verification/index.html'));
+ const feed=fs.readFileSync('dist/rss.xml','utf8');assert.ok(feed.includes('CMS integration story'));assert.ok(feed.includes('Mon, 03 Feb 2020'));assert.ok(!feed.includes('Hidden story'));assert.ok(!feed.includes('Separate page'));assert.ok(feed.includes(escapeXML('Lake & Alps')));
+ const index=JSON.parse(fs.readFileSync('dist/search-index.json','utf8'));assert.ok(index.some(p=>p.text.includes('Lake & Alps')));assert.ok(!index.some(p=>p.path.includes('hidden-verification')));
+ assert.ok(fs.readFileSync('dist/_redirects','utf8').includes('/stories/old-verification/ /stories/cms-verification/ 301'));
+ console.log('PASS: editor content renders; metadata override, black banner, escaped tag paths, date archives, pagination, RSS, draft/hidden/page separation and redirects.');
+}finally{files.forEach(f=>{if(fs.existsSync(f))fs.unlinkSync(f);});fs.writeFileSync('site.config.json',config);execFileSync('npm',['run','build'],{stdio:'pipe'});}

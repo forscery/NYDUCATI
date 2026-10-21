@@ -1,0 +1,6 @@
+---
+import Archive from '../../components/Archive.astro';import {tagSlug} from '../../lib/model.mjs';import {feed,tags,tagPath} from '../../lib/posts.js';
+export function getStaticPaths(){return tags.map(tag=>({params:{tag:tagSlug(tag)},props:{tag,items:feed.filter(p=>p.tags.includes(tag))}}));}
+const {tag,items}=Astro.props;
+---
+<Archive title={tag} description={'Posts labeled '+tag} items={items} canonical={tagPath(tag)}/>

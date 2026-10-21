@@ -1,17 +1,10 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Hero from '../components/Hero.astro';
-import posts from '../lib/posts.js';
-import config from '../../site.config.json';
-const roman=['I','II','III','IV','V'];
-const featured=config.home.storyOrder.map(i=>posts.find(p=>p.order===i)).filter(Boolean);
-const short=['Renting bikes in Milan','From Italy to Switzerland','Lugano, Maggiore & Varese','Around Lake Como','Back to Milan'];
+import Layout from '../layouts/Layout.astro';import Hero from '../components/Hero.astro';import PostGrid from '../components/PostGrid.astro';
+import {feed,hiddenPaths} from '../lib/posts.js';import config from '../../site.config.json';
+const size=Math.max(3,Math.min(30,config.home.postsPerPage||12));
 ---
-<Layout overlayHeader={config.home.showFeaturedJourney}>
-{config.home.showFeaturedJourney && <Hero {...config.home.hero} alt="Lake and mountains photographed during the Italian Lakes ride" eyebrow="TIGH’S MOTORCYCLE TRIPS / 2015" ctaHref={config.journey.path} ctaLabel="Explore the journey" scrollHref="#stories" scrollLabel="Discover the stories"/>}
-{config.home.showStoryGrid && <section class="stories" id="stories"><div class="section-head"><div><p class="eyebrow">FROM THE ROAD</p><h2>Every stop has a story.</h2></div><p>Explore the five installments.<br/>Read in order, or follow your curiosity.</p></div>
-<div class="masonry">{featured.map(post=><article class={'story-card card-'+post.order}><a href={post.path} class="card-image"><img src={'/assets/cover-'+(post.order+1)+'.jpg'} loading="lazy" alt={short[post.order]+' — photograph from the original article'}/><span class="chapter">{roman[post.order]}</span></a><div class="card-meta">ITALIAN LAKES <span>CHAPTER {roman[post.order]} / V</span></div><h3><a href={post.path}>{post.title.replace(/^[IVX]+\s+/,'')}</a></h3><p>{post.excerpt.slice(0,170).replace(/\s+\S*$/,'')}…</p><a class="read" href={post.path}>Read the story <span>↗</span></a></article>)}
-{posts.filter(p=>p.order>=100).map(p=><article class="story-card"><a href={p.path} class="card-image"><img src={p.hero?.image || p.images?.[0] || config.home.hero.image} loading="lazy" alt={p.title}/></a><h3><a href={p.path}>{p.title}</a></h3><p>{p.excerpt}</p><a class="read" href={p.path}>Read the story ↗</a></article>)}
-<aside class="note-card"><p class="eyebrow">A NOTE FROM THE ROAD</p><blockquote>“There is such agency that comes with a vehicle, and an added immediacy or presence on a motorcycle.”</blockquote><a href={posts.find(p=>p.order===4)?.path || '/journeys/italian-lakes/'}>Tigh Loughhead · Chapter V ↗</a></aside></div></section>}
-<section class="explore"><p class="eyebrow">CONTINUE EXPLORING</p>{config.navigation.map((n,i)=><a href={n.href}><span>0{i+1}</span><h2>{n.label}</h2><b>↗</b></a>)}</section>
+<Layout overlayHeader={config.home.showFeaturedJourney} canonical="/">
+{config.home.showFeaturedJourney&&<Hero {...config.home.hero} alt="Italian Lakes motorcycle journey" eyebrow="TIGH’S MOTORCYCLE TRIPS" ctaHref={config.journey.path} ctaLabel="Explore the journey" scrollHref="#stories" scrollLabel="Discover the stories"/>}
+{config.home.showStoryGrid&&<section class="stories" id="stories"><div class="section-head"><div><p class="eyebrow">FROM THE ROAD</p><h2>Every stop has a story.</h2></div><p>Latest posts from New York and beyond.</p></div><nav class="archive-nav"><a href="/tags/">Labels</a><a href="/archives/">Archive</a><a href="/rss.xml">RSS</a></nav><PostGrid items={feed.slice(0,size)}/>{feed.length>size&&<nav class="pagination"><a href="/posts/2/">Older posts →</a></nav>}</section>}
+<section class="explore"><p class="eyebrow">CONTINUE EXPLORING</p>{config.navigation.filter(n=>n.visible!==false&&!hiddenPaths.includes(n.href)).map((n,i)=><a href={n.href}><span>0{i+1}</span><h2>{n.label}</h2><b>↗</b></a>)}</section>
 </Layout>

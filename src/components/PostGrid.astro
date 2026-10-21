@@ -1,0 +1,8 @@
+---
+import config from '../../site.config.json';
+import {dateLabel} from '../lib/model.mjs';
+import {tagPath} from '../lib/posts.js';
+const {items=[]}=Astro.props;
+const cover=p=>p.hero?.image||config.articleHeroes.find(h=>h.path===p.path)?.image||p.images?.[0]||config.home.hero.image;
+---
+<div class="masonry">{items.map(p=><article class="story-card"><a href={p.path} class="card-image"><img src={cover(p)} loading="lazy" alt={p.title}/></a><div class="card-meta">{dateLabel(p.publishedAt||p.publishedMonth)}{p.location?.name&&<span>{p.location.name}</span>}</div><h3><a href={p.path}>{p.title}</a></h3><p>{p.excerpt}</p>{p.tags?.length>0&&<p class="tag-links">{p.tags.map(tag=><a href={tagPath(tag)}>{tag}</a>)}</p>}<a class="read" href={p.path}>Read the story ↗</a></article>)}</div>

@@ -1,0 +1,4 @@
+---
+import Layout from '../../layouts/Layout.astro';import {feed,tags,tagPath} from '../../lib/posts.js';
+---
+<Layout title="Labels" overlayHeader={false} canonical="/tags/"><section class="stories archive-page"><h1>Labels</h1><p>Browse posts by their original labels and newly added tags.</p><ul class="archive-list">{tags.map(tag=><li><a href={tagPath(tag)}>{tag}</a> <span>{feed.filter(p=>p.tags.includes(tag)).length} posts</span></li>)}</ul>{!tags.length&&<p>Original Blogger labels are awaiting import. Add labels to a post in the CMS to make them appear here.</p>}</section></Layout>

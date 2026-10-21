@@ -1,0 +1,6 @@
+---
+import Archive from '../../components/Archive.astro';import {feed} from '../../lib/posts.js';import config from '../../../site.config.json';
+export function getStaticPaths(){const size=Math.max(3,Math.min(30,config.home.postsPerPage||12)),count=Math.ceil(feed.length/size);return Array.from({length:Math.max(0,count-1)},(_,i)=>({params:{page:String(i+2)},props:{items:feed.slice((i+1)*size,(i+2)*size),page:i+2,count}}));}
+const {items,page,count}=Astro.props;
+---
+<Archive title={'Posts — page '+page} items={items} previous={page===2?'/':'/posts/'+(page-1)+'/'} next={page<count?'/posts/'+(page+1)+'/':null} canonical={'/posts/'+page+'/'}/>

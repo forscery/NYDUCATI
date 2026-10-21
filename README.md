@@ -1,32 +1,48 @@
-# NYDUCATI preview and Decap CMS
+# NYDUCATI CMS demo
 
-Astro static site with the five Italian Lakes chapters and three original navigation pages. Original URLs, article HTML, search, full-screen photo banners and adaptive black/white logo are retained. Blogger and the existing private Sites preview are unchanged.
+Cloudflare Worker + Astro + Decap. The live Blogger domain is unchanged. Search indexing remains disabled for the preview.
 
-## Editor
+## Writing
 
-`/admin/` loads Decap CMS. GitHub backend is configured for `forscery/NYDUCATI`, branch `main`, with editorial drafts/review/publish. Authentication still requires the hosting/OAuth setup below; it has not been verified end-to-end.
+Open `/admin/` and sign in with GitHub. Posts and Pages are separate sections. The article editor has Visual and Markdown source modes, a styled preview, and a read-only generated HTML view. It is not a page builder. Existing demo articles were converted to editable Markdown; their original HTML remains in `migration/originals/`. Automated checks compare all prose, image URLs and links before/after conversion.
 
-Stories live in `content/posts/*.json`. Imported stories retain HTML exactly; edit these in the editor's Source mode to preserve layout. New stories use the visual Markdown editor. Each story has a URL, excerpt, photographs, and optional hero with black/white title and logo controls. New stories use display order 100 or higher and appear on the homepage and in full-text search when published. Imported order values 0–7 identify the original collection/chapter positions: preserve those values. `content.json` is a migration reference, not the active content store.
+The inline image button opens the NYDUCATI R2 picker. It uploads to the `MEDIA` binding and inserts an absolute image URL. Select a hosted image or upload a local photo. Optional web preparation makes one WebP copy with a maximum long edge of 2400 pixels at quality 0.86, without upscaling. GIF and AVIF are uploaded unchanged. Originals are not modified. SVG and videos are not accepted. Use YouTube links for videos.
 
-Site settings controls modular navigation, homepage and journey banners. The Italian Lakes overview remains a five-chapter template; a general multi-trip collection editor is future work.
+Uploads are public immediately, independently of a post's draft status. The picker checks existing bucket bytes and shows projected storage before uploading. A failed post save does not remove an uploaded photo; it can be selected again. Existing Blogger photo URLs have NOT yet been migrated to R2. No bulk media upload is performed by the application or build.
 
-## Build
+## Fields and site behavior
 
-Use Node 22.22 or newer. `npm ci`, `npm run build`, `npm test`. Build copies the pinned CMS bundle and lazy-loaded chunks to `/admin/vendor/`; ordinary readers do not load the CMS. Output is `dist/`.
+Posts/pages support URL, publication date picker, author, labels, excerpt, draft state, feed/search visibility, location/map link, SEO title/description/social image, banner, width presets and YouTube links. URL changes through the CMS save hook retain the previous URL as a redirect. Previous URL aliases can also be edited explicitly. Draft content is excluded from built routes. Hidden-from-feed content retains a public URL; it is not private. Draft linked pages are removed from menus.
 
-## Hosting and sign-in (not yet activated)
+Posts appear in a date-sorted masonry feed with pagination. Pages stay out of that feed. Labels generate tag archives, dates generate monthly archives. RSS is at `/rss.xml`, the sitemap is at `/sitemap.xml`. Search includes article text, tags and locations. Original label text is retained; generated tag paths use a collision-safe slug, with redirects from corresponding Blogger label URLs.
 
-1. Import this repository into Netlify, branch `main`. The build/publish settings are in `netlify.toml`.
-2. Register a GitHub OAuth application with the deployed site as homepage and `https://api.netlify.com/auth/done` as callback.
-3. In Netlify's OAuth provider settings, install the GitHub client ID and secret. Never commit the secret or paste it into chat.
-4. Open `/admin/`, sign in with a GitHub user who can push to this repository, save a draft, publish, and verify the resulting build before using the editor regularly.
+The five demo posts retain their known year/month from the original URLs. Exact original dates, labels and locations remain unimported pending Blogger metadata/export. Unknown dates are blank; RSS omits unknown pubDate rather than inventing one. Tags appear when supplied in the CMS or imported.
 
-References: https://decapcms.org/docs/github-backend/ and https://docs.netlify.com/manage/security/secure-access-to-sites/oauth-provider-tokens/
+Site settings controls menu ordering, visibility, one submenu level, banners, featured journey and posts per page. Original three menu links are preserved. The featured Italian Lakes overview remains a five-part journey template; posts are not restricted to those groupings.
 
-No hosting account has been linked. No subscription or DNS change has been made. Choose and verify deployment audience/access before publishing. All pages and hosting headers currently use noindex/nofollow, which is not access control. Production launch must deliberately remove those directives after SEO checks.
+## Revision history
 
-## Remaining migration work
+Each article links to its own GitHub file history. An updated timestamp is derived at build time from that file's meaningful content changes. Migration/schema-only baselines are excluded, as are unrelated site changes. Cloudflare builds fetch full history when the checkout is shallow. If history cannot be read, the link remains but no timestamp is fabricated. The original publication date is independent of Git dates.
 
-Only eight sample pages are imported. Google Photos originals have not been downloaded or transcoded. Eight covers are local; inline photographs still reference Blogger/Google. Full archive migration, original-media processing, and production SEO checks remain outstanding. The logo uses supplied artwork; a licensed Reflex Pro Regular webfont can be set in branding settings.
+## Cloudflare
 
-Cloudflare Pages Free is the selected hosting target. See CLOUDFLARE-SETUP.md for the remaining account and OAuth steps. Netlify configuration above is retained as an unused alternative.
+`wrangler.jsonc` deploys the existing `nyducati` Worker, static output `dist`, OAuth routes, and media routes. R2 bucket `nyducati-media` is bound as `MEDIA`. Existing runtime secrets `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` remain required for login. Uploads/listings require a GitHub token with write permission on `forscery/NYDUCATI`. Images are served from `/media/`; the bucket does not require a public r2.dev URL.
+
+Worker-mediated media requests count toward Workers usage separately from R2. Current R2 estimates are not a guarantee of an all-inclusive Cloudflare bill. Set account usage alerts and check other services/buckets before bulk migration.
+
+Keep `indexingEnabled` OFF until launch. That setting controls robots meta, response headers and robots.txt. Canonicals, RSS and sitemap target the eventual production domain `https://www.nyducati.com`; DNS has not been changed.
+
+## Checks and cost estimate
+
+Use Node 22.22+:
+
+- `npm ci`
+- `npm run build`
+- `npm test`
+- `node scripts/check-integration.mjs` — temporary fixtures, restored afterward.
+- `node scripts/check-history.mjs` — isolated Git history scenarios.
+- `npm run media:estimate -- /path/to/prepared-images --existing-gb 0 --other-writes 0 --other-reads 0`
+
+The cost command inventories actual prepared files and hashes duplicates, then estimates full-month Standard storage and operations with free allowances and billing-unit rounding. Supply existing account usage; defaults assume unused allowances. It does not upload. It excludes Workers, paid transformations, taxes, original-download services and development/AI costs. Recheck rates before bulk migration: https://developers.cloudflare.com/r2/pricing/ (rate snapshot 2026-10-20).
+
+Browser-based editor and authenticated R2 upload must be checked on the live deployment. Local browser automation is unavailable because its security-policy check failed. Automated tests cover CMS configuration, conversion fidelity, auth/media handlers, archives, RSS, redirects, metadata and cost calculations.

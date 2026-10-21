@@ -1,0 +1,6 @@
+---
+import Archive from '../../components/Archive.astro';import {feed,months,monthOf} from '../../lib/posts.js';import {dateLabel} from '../../lib/model.mjs';
+export function getStaticPaths(){return months.map(month=>({params:{date:month.replace('-','/')},props:{month,items:feed.filter(p=>monthOf(p)===month)}}));}
+const {month,items}=Astro.props;
+---
+<Archive title={dateLabel(month)} items={items} canonical={'/archives/'+month.replace('-','/')+'/'}/>

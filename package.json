@@ -7,13 +7,17 @@
     "build": "astro build",
     "preview": "astro preview --host 127.0.0.1",
     "postbuild": "node scripts/finalize.mjs",
-    "prebuild": "node scripts/prepare-cms.mjs",
-    "predev": "node scripts/prepare-cms.mjs",
-    "test": "node scripts/check-search.mjs"
+    "prebuild": "node scripts/prepare-cms.mjs && node scripts/prepare-history.mjs",
+    "predev": "node scripts/prepare-cms.mjs && node scripts/prepare-history.mjs",
+    "test": "node scripts/check-search.mjs && node scripts/check-auth.mjs && node scripts/check-cms.mjs",
+    "media:estimate": "node scripts/media-cost.mjs"
   },
   "dependencies": {
     "astro": "7.4.1",
     "decap-cms": "3.17.1",
-    "marked": "17.0.6"
+    "js-yaml": "5.5.0",
+    "marked": "17.0.6",
+    "sanitize-html": "2.18.1",
+    "turndown": "7.2.4"
   }
 }

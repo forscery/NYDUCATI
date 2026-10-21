@@ -1,0 +1,4 @@
+---
+import Layout from '../../layouts/Layout.astro';import {feed,months,monthOf} from '../../lib/posts.js';import {dateLabel} from '../../lib/model.mjs';
+---
+<Layout title="Archive" overlayHeader={false} canonical="/archives/"><section class="stories archive-page"><h1>Archive</h1><ul class="archive-list">{months.map(month=><li><a href={'/archives/'+month.replace('-','/')+'/'}>{dateLabel(month)}</a> <span>{feed.filter(p=>monthOf(p)===month).length} posts</span></li>)}</ul></section></Layout>

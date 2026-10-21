@@ -10,3 +10,5 @@ public/admin/decap-cms.js
 .netlify/
 
 public/admin/vendor/
+
+src/generated/history.json

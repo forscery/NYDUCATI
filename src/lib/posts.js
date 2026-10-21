@@ -1,10 +1,21 @@
 import { marked } from 'marked';
-const files = import.meta.glob('../../content/posts/*.json', { eager: true, import: 'default' });
-const posts = Object.values(files).filter(p => !p.draft).sort((a,b) => a.order-b.order);
-const paths = new Set();
-for (const post of posts) {
-  if (!/^\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+(?:\.html|\/)$/.test(post.path) || paths.has(post.path)) throw new Error(`Invalid or duplicate article URL: ${post.path}`);
-  paths.add(post.path);
-  if (post.format !== 'html') post.body = marked.parse(post.body || '');
-}
+import sanitizeHtml from 'sanitize-html';
+import { validPath, listed, newest, monthOf, tagPath } from './model.mjs';
+import history from '../generated/history.json';
+const files = import.meta.glob('../../content/posts/*.json', { eager:true, import:'default' });
+export const hiddenPaths=Object.values(files).filter(p=>p.draft).map(p=>p.path);
+const paths=new Set();
+const posts=Object.entries(files).map(([file,data])=>{
+ const p={...data,kind:data.kind||'post',tags:[...new Set(data.tags||[])]};
+ if(!validPath(p.path)||paths.has(p.path))throw new Error('Invalid or duplicate content URL: '+p.path);paths.add(p.path);
+ if(p.publishedAt&&!/^\d{4}-\d{2}-\d{2}(?:T.*)?$/.test(p.publishedAt))throw new Error('Invalid publication date: '+p.title);
+ if(p.publishedAt && Number.isNaN(Date.parse(p.publishedAt)))throw new Error('Invalid publication date: '+p.title);
+ p.history=history[file.split('/').pop()];p.sourceBody=p.body;
+ p.body=sanitizeHtml(p.format==='html'?p.body:marked.parse(p.body||''),{allowedTags:sanitizeHtml.defaults.allowedTags.concat(['img','figure','figcaption']),allowedAttributes:{...sanitizeHtml.defaults.allowedAttributes,img:['src','alt','title','width','height','loading'],a:['href','title','target','rel']},allowedSchemes:['http','https','mailto'],transformTags:{img:(_tag,attribs)=>({tagName:'img',attribs:{...attribs,loading:'lazy'}})}});
+ return p;
+}).filter(p=>!p.draft);
+export const feed=posts.filter(listed).sort(newest);
+export const tags=[...new Set(feed.flatMap(p=>p.tags))].sort((a,b)=>a.localeCompare(b));
+export const months=[...new Set(feed.map(monthOf).filter(Boolean))].sort().reverse();
+export {monthOf,tagPath};
 export default posts;

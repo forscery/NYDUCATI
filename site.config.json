@@ -4,15 +4,21 @@
   "navigation": [
     {
       "label": "Tigh’s Motorcycle Trips",
-      "href": "/p/tighs-ducati-trips.html"
+      "href": "/p/tighs-ducati-trips.html",
+      "visible": true,
+      "children": []
     },
     {
       "label": "Superbikes",
-      "href": "/p/blog-page_15.html"
+      "href": "/p/blog-page_15.html",
+      "visible": true,
+      "children": []
     },
     {
       "label": "Motorcycle Museums",
-      "href": "/p/tigh-loughhead-visits-motorcycle-museums.html"
+      "href": "/p/tigh-loughhead-visits-motorcycle-museums.html",
+      "visible": true,
+      "children": []
     }
   ],
   "home": {
@@ -34,7 +40,8 @@
       "overlay": 0.55,
       "titleEmphasis": "Lakes",
       "titleBreakBeforeEmphasis": true
-    }
+    },
+    "postsPerPage": 12
   },
   "journey": {
     "title": "The Italian Lakes",
@@ -111,5 +118,6 @@
       "position": "center",
       "overlay": 0.6
     }
-  ]
+  ],
+  "indexingEnabled": false
 }

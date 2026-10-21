@@ -1,18 +1,15 @@
-# Cloudflare Pages deployment
+# Deployed Worker setup
 
-Selected hosting: Cloudflare Pages Free. Video: YouTube embeds; no video files need to be stored in this repository.
+The `nyducati` Worker is connected to `forscery/NYDUCATI` on branch `main`. Build: `npm run build`; deployment: `npx wrangler deploy`; Node 22.22 or newer.
 
-## Account steps still required
+Runtime configuration:
 
-1. Authenticate GitHub publishing and upload this repository to `forscery/NYDUCATI`.
-2. Sign in to Cloudflare, create a Pages project connected to that repository, and select `main`.
-3. Use build command `npm run build`, output directory `dist`, root repository directory, and Node 22.22.0 or newer.
-4. Preserve a private preview audience using Cloudflare Access before sharing/deploying the preview. The noindex headers prevent indexing but are not password protection.
-5. Connect a GitHub OAuth application through a Cloudflare-compatible Decap OAuth service. Decap lists a community Cloudflare Pages implementation at https://decapcms.org/docs/external-oauth-clients/. Review its code before deployment. Configure its exact service URL as `backend.base_url` in `/admin/config.yml`; the present default still expects Netlify and is not a working Cloudflare login. Store secrets only in Cloudflare's secret settings.
-6. Verify login, draft, publish, automatic rebuild, and sign-out. Verify original `.html` URLs and any Cloudflare clean-URL redirects before production cutover.
+- `GITHUB_CLIENT_ID` and secret `GITHUB_CLIENT_SECRET` for the existing GitHub OAuth app.
+- R2 bucket `nyducati-media` bound as `MEDIA`, declared in `wrangler.jsonc`.
+- OAuth callback: `https://nyducati.hidden-silence-47e4.workers.dev/auth/callback`.
 
-No Cloudflare account, project, OAuth application, or service has been provisioned yet. No DNS changes have been made. `netlify.toml` is retained only as an unused alternative.
+The R2 bucket stays private. Worker `/media/` routes serve individual images publicly. `/api/media` requires the editor's authenticated GitHub account to have repository write access. No new API key is required.
 
-## Video editing
+After deployment, open `/admin/`, create an unpublished test post, insert/upload one image, confirm it appears inline and in the styled preview, switch Visual/Markdown modes, save and reopen. Test publishing only when ready. Uploaded media is public even if its article is still a draft.
 
-The story editor has an optional YouTube videos list. Paste the video URL and caption; it appears beneath the story with a responsive player and a direct YouTube link. Videos load lazily and do not autoplay. Imported broken Blogger embeds are not automatically replaced: identify the corresponding YouTube uploads first.
+Production domain/DNS changes and full archive migration are separate later steps.

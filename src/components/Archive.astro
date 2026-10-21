@@ -1,0 +1,6 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PostGrid from './PostGrid.astro';
+const {title,description='',items=[],previous,next,canonical}=Astro.props;
+---
+<Layout title={title} description={description} overlayHeader={false} canonical={canonical}><section class="stories archive-page"><div class="section-head"><div><p class="eyebrow">NYDUCATI / STORIES</p><h1>{title}</h1></div><p>{description}</p></div><nav class="archive-nav"><a href="/">Latest posts</a><a href="/tags/">Browse labels</a><a href="/archives/">Browse dates</a><a href="/rss.xml">RSS</a></nav>{items.length?<PostGrid items={items}/>:<p>No published posts in this collection yet.</p>}<nav class="pagination" aria-label="Pagination">{previous&&<a href={previous}>← Newer posts</a>}{next&&<a href={next}>Older posts →</a>}</nav></section></Layout>

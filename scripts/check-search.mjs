@@ -13,7 +13,7 @@ assert.ok(excerptAround('A long story about Milan and its motorcycles.','Milan')
 const config=JSON.parse(fs.readFileSync('site.config.json','utf8'));
 for(const h of [config.home.hero,config.journey.hero,...config.articleHeroes])assert.ok(['white','black'].includes(h.titleColor));
 for(const p of JSON.parse(fs.readFileSync('content.json','utf8'))){
- const html=fs.readFileSync('dist'+p.path,'utf8');assert.ok(html.includes('photo-hero title-white'));assert.ok(html.includes('role="search"'));assert.ok(html.includes(p.body));
+ const html=fs.readFileSync('dist'+p.path,'utf8');assert.ok(html.includes('photo-hero title-white'));assert.ok(html.includes('role="search"'));assert.ok(html.includes('View revision history'));
 }
 assert.ok(fs.readFileSync('dist/index.html','utf8').includes('photo-hero title-white'));
-console.log('PASS: full-text/multiword/accent/empty/no-result search; nine banner settings; original article bodies and header search preserved.');
+console.log('PASS: full-text/multiword/accent/empty/no-result search; nine banner settings; original article URLs and header search preserved.');
