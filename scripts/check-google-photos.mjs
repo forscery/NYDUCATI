@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {handleGooglePhotos} from '../worker/google-photos.mjs';
+const origin='https://site.example',env={GOOGLE_PHOTOS_CLIENT_ID:'test.apps.googleusercontent.com'};
+let downloaded=0;
+const fetcher=async(url,options={})=>{url=String(url);if(url.includes('api.github.com'))return Response.json({permissions:{push:true}});if(url.includes('googleusercontent.com')){downloaded++;return new Response('photo-bytes',{headers:{'Content-Type':'image/jpeg'}});}if(url.includes('mediaItems'))return Response.json({mediaItems:[{id:'chosen',type:'PHOTO',mediaFile:{baseUrl:'https://lh3.googleusercontent.com/photo',mimeType:'image/jpeg'}}]});if(options.method==='DELETE')return new Response(null,{status:204});return Response.json({id:'session',mediaItemsSet:true});};
+const req=(action,options={})=>new Request(origin+'/api/google-photos/'+action,{...options,headers:{Authorization:'Bearer test','X-Google-Token':'google-test',...options.headers}});
+assert.equal((await handleGooglePhotos(new Request(origin+'/api/google-photos/config'),env,fetcher)).status,401);
+assert.equal((await handleGooglePhotos(req('config',{headers:{Origin:'https://evil.example'}}),env,fetcher)).status,403);
+assert.equal((await (await handleGooglePhotos(req('config'),env,fetcher)).json()).clientId,env.GOOGLE_PHOTOS_CLIENT_ID);
+assert.equal((await handleGooglePhotos(req('sessions',{method:'POST'}),env,fetcher)).status,200);
+assert.equal(await (await handleGooglePhotos(req('download?session=s&id=chosen'),env,fetcher)).text(),'photo-bytes');assert.equal(downloaded,1);
+assert.equal((await handleGooglePhotos(req('download?session=s&id=unselected'),env,fetcher)).status,400);assert.equal(downloaded,1);
+const forbidden=async(u,o)=>String(u).includes('mediaItems')?Response.json({mediaItems:[{id:'chosen',type:'PHOTO',mediaFile:{baseUrl:'https://evil.example/secret'}}]}):fetcher(u,o);
+assert.equal((await handleGooglePhotos(req('download?session=s&id=chosen'),env,forbidden)).status,502);
+assert.equal((await handleGooglePhotos(req('sessions?session=s',{method:'DELETE'}),env,fetcher)).status,200);
+console.log('PASS Google Photos: CMS authorization, origin checks, config, sessions, selected-photo download, unselected rejection, host restriction and cleanup.');
