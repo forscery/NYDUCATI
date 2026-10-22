@@ -10,7 +10,7 @@ const props={hasChanged:true,isNewEntry:true,onPersist:()=>{persisted++;}};
 let ui=window.NYDUCATI.renderPublishingControls(props);const button=(ui,label)=>ui.children.find(n=>n?.tag==='button'&&n.children[0]===label);
 await button(ui,'Save').props.onClick();assert.equal(persisted,1);assert.equal(patches.length,0);
 await button(ui,'Publish').props.onClick();assert.equal(persisted,2);assert.equal(patches.at(-1).value,false);
-entry.data.draft=false;ui=window.NYDUCATI.renderPublishingControls({...props,isNewEntry:false});assert.equal(ui.children.find(n=>n?.tag==='a').props.href,'https://preview.test/2026/10/test.html');
+entry.data.draft=false;ui=window.NYDUCATI.renderPublishingControls({...props,isNewEntry:false});assert.equal(ui.children.find(n=>n?.tag==='a').props.href.split('?')[0],'https://preview.test/2026/10/test.html');
 await button(ui,'Revert to draft').props.onClick();assert.equal(patches.at(-1).value,true);assert.equal(persisted,3);
 const config=yaml.load(fs.readFileSync('public/admin/config.yml','utf8'));assert.equal(config.publish_mode,undefined);for(const c of config.collections.slice(0,2)){assert.equal(c.fields.find(f=>f.name==='draft').default,true);assert.equal(c.fields.find(f=>f.name==='tags').widget,'tags-text');assert.equal(c.fields.find(f=>f.name==='hero').fields.find(f=>f.name==='image').media_library.allow_multiple,false);}
 const bundle=fs.readFileSync('public/admin/vendor/decap-cms.js','utf8');assert.ok(bundle.includes('renderSimpleControls=()=>window.NYDUCATI.renderPublishingControls(this.props);renderDeployPreviewControls='));

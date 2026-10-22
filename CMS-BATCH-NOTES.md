@@ -20,7 +20,7 @@ The picker starts with new uploads. Existing files are behind Find an existing i
 
 Pasting a standalone supported URL in Visual mode creates an embed card. Click the card to preview or choose Keep as plain link. Supported: Instagram /p/ and /reel/ URLs; Facebook canonical posts, videos, reels, watch and permalink URLs. Share-shortcut URLs, Stories, private/restricted/deleted content may remain links or fail at the provider. No claim of universal Meta embedding.
 
-Public pages render lightweight click-to-load previews with a permanent provider link. No Meta iframe loads until requested. This avoids slowing photo-heavy posts or silently loading trackers. Existing standalone supported links also become embed cards on publication; links embedded inside prose stay links.
+Public pages render the provider iframe directly, lazy-loaded near the viewport, without a separate preview button or View on Instagram link. Provider-owned controls inside the embed are controlled by Meta. Existing standalone supported links also become embed cards on publication; links embedded inside prose stay links.
 
 ## Verification and limits
 

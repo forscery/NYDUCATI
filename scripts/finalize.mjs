@@ -12,3 +12,7 @@ fs.writeFileSync('dist/_redirects',redirects.join('\n')+'\n');
 const config=JSON.parse(fs.readFileSync('site.config.json','utf8'));
 fs.writeFileSync('dist/_headers','/*\n  X-Content-Type-Options: nosniff\n'+(!config.indexingEnabled?'  X-Robots-Tag: noindex, nofollow\n':''));
 fs.writeFileSync('dist/robots.txt','User-agent: *\n'+(config.indexingEnabled?'Disallow: /admin/\nDisallow: /api/\nDisallow: /auth\nSitemap: https://www.nyducati.com/sitemap.xml\n':'Disallow: /\n'));
+
+// No draft content is exposed; compare saved article text/title/path to deployed build.
+const {publicationFingerprint}=await import('../public/admin/publication.js');
+fs.writeFileSync('dist/publication-status.json',JSON.stringify(Object.fromEntries(await Promise.all(posts.map(async p=>[p.path,await publicationFingerprint(p)])))));

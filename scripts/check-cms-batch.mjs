@@ -6,7 +6,7 @@ import fs from 'node:fs';import vm from 'node:vm';
 assert.equal(socialLink('https://www.instagram.com/reel/ABC/?igsh=x').provider,'Instagram');
 for(const u of ['https://www.instagram.com/stories/user/123/','https://instagram.com.evil.test/p/abc/','javascript:alert(1)','https://facebook.com/privategroup'])assert.equal(socialLink(u),null);
 assert.equal(socialLink('https://www.facebook.com/user/posts/123').provider,'Facebook');
-const social=enhanceArticle('<p><a href="https://www.instagram.com/reel/abc/">https://www.instagram.com/reel/abc/</a></p>');assert.ok(social.includes('data-embed='));assert.ok(!social.includes('<iframe'),'No third-party download until click');
+const social=enhanceArticle('<p><a href="https://www.instagram.com/reel/abc/">https://www.instagram.com/reel/abc/</a></p>');assert.ok(social.includes('<iframe'));assert.ok(social.includes('loading="lazy"'));assert.ok(!social.includes('<button'));assert.ok(!social.includes('View on')); 
 assert.ok(!enhanceArticle('<p><a data-plain="true" href="https://www.instagram.com/reel/abc/">https://www.instagram.com/reel/abc/</a></p>').includes('data-embed='));
 assert.ok(!enhanceArticle('<p>My link <a href="https://www.instagram.com/reel/abc/">reel</a></p>').includes('data-embed='));
 const photo=enhanceArticle('<figure><img src="https://site.test/reading.webp" data-full="https://site.test/full.webp" width="960" height="720" /></figure>');assert.ok(photo.includes('href="https://site.test/full.webp"'));assert.ok(!photo.includes('src="https://site.test/full.webp"'));
