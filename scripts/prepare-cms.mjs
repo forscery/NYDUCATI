@@ -16,3 +16,6 @@ fs.writeFileSync(vendor,bundle);
 // Lazy-loaded HEIC decoder: shipped locally, never fetched from a public CDN at runtime.
 fs.copyFileSync('node_modules/heic-to/dist/heic-to.js','public/admin/vendor/heic-to.js');
 fs.copyFileSync('node_modules/heic-to/LICENSE','public/admin/vendor/heic-to-LICENSE.txt');
+
+fs.copyFileSync('node_modules/turndown/dist/turndown.js','public/admin/vendor/turndown.js');
+fs.copyFileSync('node_modules/dompurify/dist/purify.min.js','public/admin/vendor/purify.js');

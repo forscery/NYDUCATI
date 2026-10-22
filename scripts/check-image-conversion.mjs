@@ -4,7 +4,7 @@ const header=new Uint8Array(32);header.set([... 'ftypheic'].map(c=>c.charCodeAt(
 const heic=new File([header],'IMG_0001.HEIC',{type:''});assert.equal(await isHeicFile(heic),true);assert.equal(await isHeicFile(new File([header],'no-extension')),true);
 let closed=0,drawn=[],encoded=0,heicCalls=0;
 const bitmap={width:4032,height:3024,close(){closed++;}};
-const canvas=()=>({width:0,height:0,getContext(){return {drawImage(...args){drawn=args;}};},toBlob(callback,type,quality){assert.equal(type,'image/webp');assert.equal(quality,.86);encoded++;callback(new Blob(['RIFFfakeWEBP'],{type}));}});
+const canvas=()=>({width:0,height:0,getContext(){return {drawImage(...args){drawn=args;}};},toBlob(callback,type,quality){assert.equal(type,'image/webp');assert.ok(quality>=.49&&quality<=.78);encoded++;callback(new Blob(['RIFFfakeWEBP'],{type}));}});
 const options={decodeBitmap:async()=>{throw Error('No native HEIC support');},decodeHeic:async args=>{heicCalls++;assert.equal(args.type,'bitmap');return bitmap;},makeCanvas:canvas};
 const result=await prepareImage(heic,options);assert.equal(result.file.type,'image/webp');assert.equal(result.file.name,'IMG_0001.webp');assert.equal(result.width,2400);assert.equal(result.height,1800);assert.equal(closed,1);assert.equal(heicCalls,1);
 await prepareImage(heic,{...options,optimize:false});assert.equal(heicCalls,2,'HEIC must convert even with optional optimization off');

@@ -1,0 +1,21 @@
+import assert from 'node:assert/strict';
+import {socialLink} from '../public/admin/social.js';
+import {enhanceArticle} from '../src/lib/article-media.mjs';
+import {prepareVariants} from '../public/admin/media-convert.js';
+import fs from 'node:fs';import vm from 'node:vm';
+assert.equal(socialLink('https://www.instagram.com/reel/ABC/?igsh=x').provider,'Instagram');
+for(const u of ['https://www.instagram.com/stories/user/123/','https://instagram.com.evil.test/p/abc/','javascript:alert(1)','https://facebook.com/privategroup'])assert.equal(socialLink(u),null);
+assert.equal(socialLink('https://www.facebook.com/user/posts/123').provider,'Facebook');
+const social=enhanceArticle('<p><a href="https://www.instagram.com/reel/abc/">https://www.instagram.com/reel/abc/</a></p>');assert.ok(social.includes('data-embed='));assert.ok(!social.includes('<iframe'),'No third-party download until click');
+assert.ok(!enhanceArticle('<p><a data-plain="true" href="https://www.instagram.com/reel/abc/">https://www.instagram.com/reel/abc/</a></p>').includes('data-embed='));
+assert.ok(!enhanceArticle('<p>My link <a href="https://www.instagram.com/reel/abc/">reel</a></p>').includes('data-embed='));
+const photo=enhanceArticle('<figure><img src="https://site.test/reading.webp" data-full="https://site.test/full.webp" width="960" height="720" /></figure>');assert.ok(photo.includes('href="https://site.test/full.webp"'));assert.ok(!photo.includes('src="https://site.test/full.webp"'));
+let calls=[];const options={decodeBitmap:async()=>({width:4000,height:3000,close(){}}),makeCanvas:()=>({width:0,height:0,getContext(){return {drawImage(){}};},toBlob(fn,type,quality){calls.push({width:this.width,height:this.height,quality});fn(new Blob(['image'],{type}));}})};
+const v=await prepareVariants(new File(['jpeg'],'ride.jpg',{type:'image/jpeg'}),options);assert.equal(v.full.width,2200);assert.equal(v.column.width,960);assert.equal(v.thumbnail.width,240);assert.ok(calls.every(c=>c.quality<=.78));
+const gif=new File(['GIF89a'],'ride.gif',{type:'image/gif'});const animation=await prepareVariants(gif);assert.equal(animation.full.file,gif);assert.equal(animation.column.file,gif);
+// Verify cursor restore and ordered batch insertion on the actual registered widget.
+let widget,inserted='';const elements=()=>({children:[],dataset:{},append(n){this.children.push(n);},get innerHTML(){return this.children.map(n=>n.src||n.innerHTML).join('|');}});
+const document={createElement:elements,activeElement:null};vm.runInNewContext(fs.readFileSync('public/admin/writer.js','utf8'),{window:{h(){},createClass:x=>x,NYDUCATI:{pickImages:async()=>[{column:'one',full:'full-one',thumbnail:'thumb-one',width:960,height:720},{column:'two',full:'full-two',thumbnail:'thumb-two'}]}},document,DOMPurify:{sanitize:s=>s},TurndownService:class{addRule(){}},CMS:{registerWidget:w=>widget=w},marked:{parse:s=>s}});
+let saved=0;const control={...widget.controlComponent,saveRange(){saved++;},insert(s){inserted=s;},setState(){}};await control.photos();assert.equal(saved,1);assert.equal(inserted,'one|two<p><br></p>');
+let renders=0;control.lastValue='typed';control.props={value:'typed'};control.renderValue=()=>renders++;control.componentDidUpdate({value:'before'});assert.equal(renders,0,'Typing must not rewrite contenteditable and lose caret');
+console.log('PASS batch: ordered insertion, caret-preserving updates, three image sizes, GIF preservation, safe social URLs/plain-link opt-out and deferred full-image/embed loading.');

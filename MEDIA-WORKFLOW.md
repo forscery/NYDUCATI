@@ -1,5 +1,7 @@
 # NYDUCATI media workflow
 
+**Current CMS upload behavior:** see [CMS-BATCH-NOTES.md](CMS-BATCH-NOTES.md) for the new 960/2200/240px variants, bulk editor insertion, media administration and automatic social-link recognition. Earlier descriptions below apply to the previous uploader and the separate migration utility.
+
 ## New posts
 
 Choose an image in the CMS. JPEG, PNG and WebP can be prepared as WebP; HEIC/HEIF always converts to a still WebP. Preparation occurs on the author's computer. Originals remain untouched. The uploader shows a prepared thumbnail, input/output sizes and final dimensions before upload. Maximum dimension is 2400 pixels, quality 0.86, with no upscaling. The decoder is downloaded from this site only if native HEIC decoding fails. It is not loaded on public blog pages.

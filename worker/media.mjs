@@ -36,8 +36,12 @@ export async function handleMedia(request,env,fetcher=fetch){
    do {const page=await env.MEDIA.list({limit:1000,cursor});for(const o of page.objects){bytes+=o.size;files++;}scannedPages++;cursor=page.truncated?page.cursor:undefined;}while(cursor&&scannedPages<100);
    return json({bytes,files,scannedPages,partial:!!cursor});
   }
-  const result=await env.MEDIA.list({prefix:'images/',limit:48,cursor:url.searchParams.get('cursor')||undefined});
-  return json({files:result.objects.map(o=>({url:url.origin+'/media/'+o.key,name:o.customMetadata?.originalName||o.key.split('/').pop(),size:o.size})),cursor:result.truncated?result.cursor:null});
+  const query=(url.searchParams.get('q')||'').toLowerCase();let cursor=url.searchParams.get('cursor')||undefined,files=[],pages=0;
+  do {const result=await env.MEDIA.list({prefix:'images/',limit:48,cursor,include:['customMetadata']});
+   files.push(...result.objects.filter(o=>!query||(o.customMetadata?.originalName||o.key).toLowerCase().includes(query)).map(o=>({url:url.origin+'/media/'+o.key,name:o.customMetadata?.originalName||o.key.split('/').pop(),size:o.size})));
+   cursor=result.truncated?result.cursor:undefined;pages++;
+  }while(query&&cursor&&files.length<48&&pages<10);
+  return json({files,cursor:cursor||null});
  }
  if(Number(request.headers.get('Content-Length'))>MAX)return json({error:'Image exceeds 20 MB.'},413);
  const reader=request.body?.getReader();if(!reader)return json({error:'No image supplied'},400);

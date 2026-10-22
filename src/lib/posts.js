@@ -1,3 +1,4 @@
+import {enhanceArticle} from './article-media.mjs';
 import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
 import { validPath, listed, newest, monthOf, tagPath } from './model.mjs';
@@ -13,7 +14,7 @@ const posts=Object.entries(files).map(([file,data])=>{
  if(p.publishedAt&&!/^\d{4}-\d{2}-\d{2}(?:T.*)?$/.test(p.publishedAt))throw new Error('Invalid publication date: '+p.title);
  if(p.publishedAt && Number.isNaN(Date.parse(p.publishedAt)))throw new Error('Invalid publication date: '+p.title);
  p.history=history[file.split('/').pop()];p.sourceBody=p.body;
- p.body=sanitizeHtml(p.format==='html'?p.body:marked.parse(p.body||''),{allowedTags:sanitizeHtml.defaults.allowedTags.concat(['img','figure','figcaption']),allowedAttributes:{...sanitizeHtml.defaults.allowedAttributes,img:['src','alt','title','width','height','loading'],a:['href','title','target','rel']},allowedSchemes:['http','https','mailto'],transformTags:{img:(_tag,attribs)=>({tagName:'img',attribs:{...attribs,loading:'lazy'}})}});
+ p.body=enhanceArticle(sanitizeHtml(p.format==='html'?p.body:marked.parse(p.body||''),{allowedTags:sanitizeHtml.defaults.allowedTags.concat(['img','figure','figcaption']),allowedAttributes:{...sanitizeHtml.defaults.allowedAttributes,img:['src','alt','title','width','height','loading','data-full','data-thumb'],a:['href','title','target','rel','data-plain'],figure:['data-social']},allowedSchemes:['http','https','mailto'],transformTags:{img:(_tag,attribs)=>({tagName:'img',attribs:{...attribs,loading:'lazy',decoding:'async'}})}}));
  return p;
 }).filter(p=>!p.draft);
 export const feed=posts.filter(listed).sort(newest);

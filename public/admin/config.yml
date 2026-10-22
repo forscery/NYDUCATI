@@ -216,13 +216,13 @@ collections:
         required: false
       - name: body
         label: Article — visual / Markdown source
-        widget: richtext
+        widget: ny-writer
         modes:
           - rich_text
           - raw
         hint: >-
-          In Rich text mode, click Insert image → Upload / insert image, then choose a photograph from your
-          computer or R2. The image appears in the article. Markdown shows editable source.
+          In Visual mode, click Add photos to select multiple photographs from your
+          computer or Google Photos. Click a thumbnail for image options. Markdown shows editable source.
         editor_components:
           - image
     name: posts
@@ -441,13 +441,13 @@ collections:
         required: false
       - name: body
         label: Article — visual / Markdown source
-        widget: richtext
+        widget: ny-writer
         modes:
           - rich_text
           - raw
         hint: >-
-          In Rich text mode, click Insert image → Upload / insert image, then choose a photograph from your
-          computer or R2. The image appears in the article. Markdown shows editable source.
+          In Visual mode, click Add photos to select multiple photographs from your
+          computer or Google Photos. Click a thumbnail for image options. Markdown shows editable source.
         editor_components:
           - image
     name: pages
