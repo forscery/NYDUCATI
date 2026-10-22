@@ -1,6 +1,6 @@
 {
 "vars": {
-  "GOOGLE_PHOTOS_CLIENT_ID": "Y77157551547-40rja7lndsgvac755flqehrlfg6ioqqk.apps.googleusercontent.com"
+  "GOOGLE_PHOTOS_CLIENT_ID": "77157551547-40rja7lndsgvac755flqehrlfg6ioqqk.apps.googleusercontent.com"
 },
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "nyducati",
