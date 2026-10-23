@@ -1,0 +1,40 @@
+{
+  "showInFeed": true,
+  "draft": false,
+  "publishedAt": "2026-10-22",
+  "body": "<figure><img src=\"https://nyducati.hidden-silence-47e4.workers.dev/media/images/mik00105-reading-0f88ccd9254bef52dde9ef14cb7fd3b26b6a299b8447e474ef59b2bc7283d262.webp\" data-full=\"https://nyducati.hidden-silence-47e4.workers.dev/media/images/mik00105-large-a78f30d59a2706b1051963c41e403b44bf3e5c750b7427317e0983d24182958f.webp\" data-thumb=\"https://nyducati.hidden-silence-47e4.workers.dev/media/images/mik00105-thumb-71e3c2b69edb80db4f2677513eaa831985d305b4cdb59f88cfc398c8f71ddee3.webp\" alt=\"\" width=\"768\" height=\"960\"></figure>\n\n<figure><br></figure>\n\nOh yeah, I ride the streets of Manhattan's Lower East Side on my Ducati motorcycles. \n\nhttps://www.facebook.com/stories/1551509344917109/UzpfSVNDOjE4MzM5OTI3NTQzOTYwNDM=?view\\_single=false\n\n<img src=\"https://nyducati.hidden-silence-47e4.workers.dev/media/images/mik00040-reading-e01504e957f01a8cfc0c7e96a9cbc7d5e62cd76b4f25d7727b05f5fd9659ab39.webp\" data-full=\"https://nyducati.hidden-silence-47e4.workers.dev/media/images/mik00040-large-50507424379b332ab38d9618acdd92d9bd5f380c615c6576dc2f3de4b21d2617.webp\" data-thumb=\"https://nyducati.hidden-silence-47e4.workers.dev/media/images/mik00040-thumb-e32594c075ec802ef2fef761f8d9a9005271bbf85ad0383c4e0860735bce2a48.webp\" alt=\"\" width=\"768\" height=\"960\">",
+  "path": "/2026/10/tigh-loughhead-rides-the-streets-of-manhattan-on-ducati-motorcycles.html",
+  "author": "Tigh Loughhead",
+  "order": 100,
+  "style": {
+    "width": "standard",
+    "imageLayout": "standard"
+  },
+  "kind": "post",
+  "location": {
+    "name": "Lower East Side",
+    "address": "Lower East Side, New York, United States",
+    "latitude": 40.7159357,
+    "longitude": -73.9868057,
+    "mapUrl": "https://www.openstreetmap.org/?mlat=40.7159357&mlon=-73.9868057#map=15/40.7159357/-73.9868057",
+    "source": "OpenStreetMap"
+  },
+  "originalPath": "/2026/10/tigh-loughhead-rides-the-streets-of-manhattan-on-ducati-motorcycles.html",
+  "format": "markdown",
+  "title": "Tigh Loughhead Rides the Streets of Manhattan on Ducati Motorcycles",
+  "hero": {
+    "titleColor": "white",
+    "position": "center",
+    "overlay": 0.55,
+    "image": "https://nyducati.hidden-silence-47e4.workers.dev/media/images/mik00040-large-50507424379b332ab38d9618acdd92d9bd5f380c615c6576dc2f3de4b21d2617.webp"
+  },
+  "seo": {
+    "noindex": false
+  },
+  "aliases": [],
+  "mediaIssues": [
+    {
+      "status": "needs_review"
+    }
+  ]
+}
