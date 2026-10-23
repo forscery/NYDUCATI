@@ -11,7 +11,7 @@ assert.equal(searchEntries([{title:'Café',text:'A lake',path:'/a'}],'cafe').len
 assert.equal(searchEntries(entries,'<script>alert(1)</script>').length,0);
 assert.ok(excerptAround('A long story about Milan and its motorcycles.','Milan').includes('Milan'));
 const config=JSON.parse(fs.readFileSync('site.config.json','utf8'));
-for(const h of [config.home.hero,config.journey.hero,...config.articleHeroes])assert.ok(['white','black'].includes(h.titleColor));
+for(const h of [config.home.hero,JSON.parse(fs.readFileSync('content/journeys/italian-lakes.json')).hero,...config.articleHeroes])assert.ok(['white','black'].includes(h.titleColor));
 for(const p of JSON.parse(fs.readFileSync('content.json','utf8'))){
  const html=fs.readFileSync('dist'+p.path,'utf8');assert.ok(html.includes('photo-hero title-white'));assert.ok(html.includes('role="search"'));assert.ok(html.includes('View revision history'));
 }

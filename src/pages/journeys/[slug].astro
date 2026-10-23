@@ -1,0 +1,13 @@
+---
+import Layout from '../../layouts/Layout.astro';import Hero from '../../components/Hero.astro';
+import journeys from '../../lib/journeys.js';import {chapterNumber} from '../../lib/journey-model.mjs';
+export function getStaticPaths(){return journeys.map(journey=>({params:{slug:journey.path.split('/')[2]},props:{journey}}));}
+const {journey:j}=Astro.props;
+---
+<Layout title={j.seo?.title||j.title} description={j.seo?.description||j.excerpt} canonical={j.path} socialImage={j.seo?.socialImage||j.hero?.image} overlayHeader={!!j.hero?.image} pageNoindex={j.seo?.noindex}>
+{j.hero?.image?<Hero {...j.hero} title={j.title} subtitle={j.subtitle} eyebrow={j.eyebrow} scrollHref="#chapters" scrollLabel={j.sectionTitle||'Explore the journey'}/>:<div class="journey-heading"><h1>{j.title}</h1><p>{j.subtitle}</p></div>}
+<div class="journey-intro prose" set:html={j.html}/>
+<section id="chapters" aria-label={j.sectionTitle||'Journey chapters'}><h2 class="journey-heading">{j.sectionTitle||'Explore the journey'}</h2><div class="chapter-list">{j.chapters.map((entry,i)=><a href={entry.path}><span class="ordinal">{chapterNumber(i,j.numbering)}</span>{entry.image&&<img src={Array.isArray(entry.image)?entry.image[0]:entry.image} alt="" loading="lazy"/>}<div><h2>{entry.title}</h2><p>{entry.excerpt}</p></div><span class="arrow">↗</span></a>)}</div></section>
+<p class="journey-heading"><a href={'https://github.com/forscery/NYDUCATI/commits/main/content/journeys/'+j.sourceFile} target="_blank" rel="noopener noreferrer">Journey revision history ↗</a></p>
+</Layout>
+<style>.journey-heading{max-width:1200px;margin:36px auto;padding:24px}.journey-intro{max-width:900px;margin:36px auto;padding:24px}</style>

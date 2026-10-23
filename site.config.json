@@ -43,19 +43,6 @@
     },
     "postsPerPage": 12
   },
-  "journey": {
-    "title": "The Italian Lakes",
-    "subtitle": "Five chapters between Italy and Switzerland.",
-    "path": "/journeys/italian-lakes/",
-    "cover": "/assets/cover-4.jpg",
-    "hero": {
-      "image": "/assets/cover-4.jpg",
-      "titleColor": "white",
-      "position": "center",
-      "overlay": 0.55,
-      "titleEmphasis": "Lakes"
-    }
-  },
   "branding": {
     "logoImage": "/assets/nyducati-wordmark.svg",
     "logoFontFamily": "Reflex Pro Regular",
@@ -119,5 +106,6 @@
       "overlay": 0.6
     }
   ],
-  "indexingEnabled": false
+  "indexingEnabled": false,
+  "featuredJourneyPath": "/journeys/italian-lakes/"
 }

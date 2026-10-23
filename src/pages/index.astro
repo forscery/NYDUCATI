@@ -1,10 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';import Hero from '../components/Hero.astro';import PostGrid from '../components/PostGrid.astro';
+import journeys from '../lib/journeys.js';
 import {feed,hiddenPaths} from '../lib/posts.js';import config from '../../site.config.json';
+const featured=journeys.find(j=>j.path===config.featuredJourneyPath);
 const size=Math.max(3,Math.min(30,config.home.postsPerPage||12));
 ---
-<Layout overlayHeader={config.home.showFeaturedJourney} canonical="/">
-{config.home.showFeaturedJourney&&<Hero {...config.home.hero} alt="Italian Lakes motorcycle journey" eyebrow="TIGH’S MOTORCYCLE TRIPS" ctaHref={config.journey.path} ctaLabel="Explore the journey" scrollHref="#stories" scrollLabel="Discover the stories"/>}
+<Layout overlayHeader={config.home.showFeaturedJourney&&!!featured} canonical="/">
+{config.home.showFeaturedJourney&&featured&&<Hero {...config.home.hero} alt="Italian Lakes motorcycle journey" eyebrow="TIGH’S MOTORCYCLE TRIPS" ctaHref={featured.path} ctaLabel="Explore the journey" scrollHref="#stories" scrollLabel="Discover the stories"/>}
 {config.home.showStoryGrid&&<section class="stories" id="stories"><div class="section-head"><div><p class="eyebrow">FROM THE ROAD</p><h2>Every stop has a story.</h2></div><p>Latest posts from New York and beyond.</p></div><nav class="archive-nav"><a href="/tags/">Labels</a><a href="/archives/">Archive</a><a href="/rss.xml">RSS</a></nav><PostGrid items={feed.slice(0,size)}/>{feed.length>size&&<nav class="pagination"><a href="/posts/2/">Older posts →</a></nav>}</section>}
 <section class="explore"><p class="eyebrow">CONTINUE EXPLORING</p>{config.navigation.filter(n=>n.visible!==false&&!hiddenPaths.includes(n.href)).map((n,i)=><a href={n.href}><span>0{i+1}</span><h2>{n.label}</h2><b>↗</b></a>)}</section>
 </Layout>

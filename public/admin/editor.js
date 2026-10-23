@@ -2,8 +2,8 @@
 const h=window.h;
 CMS.registerPreviewStyle('/style.css');CMS.registerPreviewStyle('/admin/preview.css');
 function mediaNotice(data){const issues=(data.mediaIssues||[]).filter(i=>i.status!=='resolved');return issues.length?h('aside',{style:{background:'#fff5db',padding:'16px',border:'1px solid #bd8100'}},h('strong',{},'Media needs attention — editor only'),...issues.map((i,n)=>h('div',{key:i.id||n,style:{marginTop:'12px'}},h('b',{},i.filename||'Original filename unknown'),h('p',{},i.date||'Date unknown'),h('p',{},i.reason||'Review this media'),h('code',{style:{overflowWrap:'anywhere'}},i.source||'Original reference unavailable')))):null;}
-function Preview(props){const d=props.entry.get('data').toJS();const html=window.marked.parse(d.body||'');return h('div',{className:'editor-preview'},h('p',{className:'preview-note'},'Article preview · visual layout is approximate'),d.hero?.image?h('img',{className:'preview-hero',src:props.getAsset(d.hero.image).toString(),alt:''}):null,h('h1',{},d.title),h('p',{className:'preview-meta'},[d.publishedAt,d.author,...(d.tags||[])].filter(Boolean).join(' · ')),mediaNotice(d),h('article',{className:'prose'},props.widgetFor('body')),h('details',{},h('summary',{},'Generated HTML — read only'),h('p',{},'Edit the article with the visual / Markdown toggle. This shows its generated HTML.'),h('pre',{},h('code',{},html))));}
-CMS.registerPreviewTemplate('posts',Preview);CMS.registerPreviewTemplate('pages',Preview);
+function Preview(props){const d=props.entry.get('data').toJS();const html=window.marked.parse(d.body||'');return h('div',{className:'editor-preview'},h('p',{className:'preview-note'},'Article preview · visual layout is approximate'),d.hero?.image?h('img',{className:'preview-hero',src:props.getAsset(d.hero.image).toString(),alt:''}):null,h('h1',{},d.title),h('p',{className:'preview-meta'},[d.publishedAt,d.author,...(d.tags||[])].filter(Boolean).join(' · ')),mediaNotice(d),d.kind==='journey'&&h('section',{},h('h2',{},d.sectionTitle||'Journey chapters'),h('ol',{},...(d.entries||[]).map((item,i)=>h('li',{key:i},item.label||item.reference||'Choose a post or page')))),h('article',{className:'prose'},props.widgetFor('body')),h('details',{},h('summary',{},'Generated HTML — read only'),h('p',{},'Edit the article with the visual / Markdown toggle. This shows its generated HTML.'),h('pre',{},h('code',{},html))));}
+CMS.registerPreviewTemplate('posts',Preview);CMS.registerPreviewTemplate('pages',Preview);CMS.registerPreviewTemplate('journeys',Preview);
 // Use the current entry API shipped with our pinned Decap version.
 const today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');};
 const slugify=value=>String(value||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/['’]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
@@ -13,12 +13,13 @@ function makePath(data,value=''){
  const slug=slugify(input||data.title);
  if(!slug)return '';
  const date=/^\d{4}-\d{2}-\d{2}/.test(data.publishedAt||'')?data.publishedAt:today();
+ if(data.kind==='journey')return '/journeys/'+slug+'/';
  return data.kind==='page'?'/p/'+slug+'.html':'/'+date.slice(0,4)+'/'+date.slice(5,7)+'/'+slug+'.html';
 }
 let lastEntry=null,lastAutomatic=null,updating=false;
 CMS.editor.onEditorChange(snapshot=>{
  if(updating)return;
- if(!snapshot||!['posts','pages'].includes(snapshot.collection)){lastEntry=null;lastAutomatic=null;return;}
+ if(!snapshot||!['posts','pages','journeys'].includes(snapshot.collection)){lastEntry=null;lastAutomatic=null;return;}
  const key=snapshot.collection+':'+(snapshot.slug||'new');
  if(key!==lastEntry){lastEntry=key;lastAutomatic=null;}
  const d=snapshot.data;
@@ -30,13 +31,14 @@ CMS.editor.onEditorChange(snapshot=>{
  try{CMS.editor.applyFieldPatch([{path:'path',value:path}]);}finally{updating=false;}
 });
 CMS.registerEventListener({name:'preSave',handler:({entry})=>{
- let data=entry.get('data');if(!['post','page'].includes(data.get('kind'))&&!data.get('path'))return data;
+ let data=entry.get('data');if(!['post','page','journey'].includes(data.get('kind'))&&!data.get('path'))return data;
  const d=data.toJS();
  if(Array.isArray(d.hero?.image))data=data.setIn(['hero','image'],d.hero.image[0]||'');
  if(Array.isArray(d.seo?.socialImage))data=data.setIn(['seo','socialImage'],d.seo.socialImage[0]||'');
  if(!d.publishedAt&&!d.metadataPending&&!d.originalPath)d.publishedAt=today();
  const path=makePath(d,d.path),old=d.originalPath;
  if(!path||!/^\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_-]+(?:\.html|\/)$/.test(path)||/^\/(admin|auth|api|media|tags|archives|posts|search)(\/|$)/.test(path))throw new Error('Use a title or slug such as two-wheel-tuesdays, or a local URL such as /2026/10/two-wheel-tuesdays.html.');
+ if(d.kind==='journey'&&!/^\/journeys\/[a-zA-Z0-9_-]+\/$/.test(path))throw new Error('Journey URLs must look like /journeys/italian-lakes/.');
  let aliases=d.aliases||[];if(old&&old!==path)aliases=[...new Set([...aliases,old])].filter(a=>a!==path);
  data=data.set('path',path).set('aliases',aliases).set('originalPath',path);
  if(d.publishedAt)data=data.set('publishedAt',d.publishedAt);

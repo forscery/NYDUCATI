@@ -1,6 +1,8 @@
 ---
 import config from '../../site.config.json';
-import {hiddenPaths} from '../lib/posts.js';
+import {hiddenPaths as hiddenPostPaths} from '../lib/posts.js';
+import {hiddenJourneyPaths} from '../lib/journeys.js';
+const hiddenPaths=[...hiddenPostPaths,...hiddenJourneyPaths];
 const fontUrl=config.branding?.logoWebfontUrl;
 const {overlayHeader=true}=Astro.props;
 const {title=config.title, description='Motorcycle stories and photography by Tigh Loughhead.', canonical, socialImage, article} = Astro.props;
@@ -9,7 +11,7 @@ const schema = article ? {'@context':'https://schema.org','@type':article.kind==
 ---
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="robots" content={!config.indexingEnabled||article?.seo?.noindex?'noindex,nofollow':'index,follow'}/><meta name="description" content={description}/><title>{title} — NYDUCATI</title>{canonical && <link rel="canonical" href={'https://www.nyducati.com'+canonical}/>}
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="robots" content={!config.indexingEnabled||article?.seo?.noindex||Astro.props.pageNoindex?'noindex,nofollow':'index,follow'}/><meta name="description" content={description}/><title>{title} — NYDUCATI</title>{canonical && <link rel="canonical" href={'https://www.nyducati.com'+canonical}/>}
 <link rel="alternate" type="application/rss+xml" title="NYDUCATI RSS" href="/rss.xml"/><meta property="og:title" content={title}/><meta property="og:description" content={description}/><meta property="og:type" content={article?.kind==='post'?'article':'website'}/>{canonical&&<meta property="og:url" content={absolute(canonical)}/>}<meta name="twitter:card" content={socialImage?'summary_large_image':'summary'}/>{socialImage&&<meta property="og:image" content={absolute(socialImage)}/>}<script is:inline type="application/ld+json" set:html={schema?JSON.stringify(schema).replace(/</g,'\\u003c'):null}/><link rel="stylesheet" href="/style.css"/>{fontUrl && <style set:html={`@font-face{font-family:'Reflex Pro Regular';src:url('${fontUrl}');font-weight:400;font-style:normal;font-display:swap}.wordmark.logo-type{font-family:'Reflex Pro Regular',sans-serif;font-weight:400;font-size:38px;line-height:1;letter-spacing:0;width:auto}`}/>}</head>
 <body class:list={[{"has-photo-header":overlayHeader}]}>
 <a class="skip" href="#main">Skip to content</a>

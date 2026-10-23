@@ -2,7 +2,7 @@
 const h=window.h;
 window.NYDUCATI=window.NYDUCATI||{};
 window.NYDUCATI.renderPublishingControls=function(props){
- const entry=CMS.editor.getCurrentEntry(),isArticle=entry&&['posts','pages'].includes(entry.collection);
+ const entry=CMS.editor.getCurrentEntry(),isArticle=entry&&['posts','pages','journeys'].includes(entry.collection);
  const busy=props.isPersisting||props.isPublishing;
  const persist=async draft=>{
   if(busy)return;

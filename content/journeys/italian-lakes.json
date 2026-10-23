@@ -1,0 +1,49 @@
+{
+  "kind": "journey",
+  "title": "The Italian Lakes. By motorcycle.",
+  "path": "/journeys/italian-lakes/",
+  "originalPath": "/journeys/italian-lakes/",
+  "aliases": [],
+  "draft": false,
+  "author": "Tigh Loughhead",
+  "excerpt": "Five chapters between Italy and Switzerland.",
+  "hero": {
+    "image": "/assets/cover-4.jpg",
+    "titleColor": "white",
+    "position": "center",
+    "overlay": 0.55,
+    "titleEmphasis": "Lakes"
+  },
+  "subtitle": "From Milan into the lakes of northern Italy and Switzerland—and back again.",
+  "eyebrow": "A JOURNEY IN FIVE CHAPTERS / 2015",
+  "sectionTitle": "Explore the chapters",
+  "numbering": "roman",
+  "body": "Five original stories by Tigh Loughhead.\n\nFollow the trip in order, one chapter at a time.",
+  "entries": [
+    {
+      "type": "post",
+      "reference": "/2015/11/renting-bikes-in-milan-italian-lakes-region.html",
+      "image": "/assets/cover-1.jpg"
+    },
+    {
+      "type": "post",
+      "reference": "/2015/12/ii-around-couple-of-lakes-from-italy-to.html",
+      "image": "/assets/cover-2.jpg"
+    },
+    {
+      "type": "post",
+      "reference": "/2015/12/iii-lago-lugano-around-lago-maggiore-to.html",
+      "image": "/assets/cover-3.jpg"
+    },
+    {
+      "type": "post",
+      "reference": "/2015/12/iv-circumnavigating-lake-como-on-bmw.html",
+      "image": "/assets/cover-4.jpg"
+    },
+    {
+      "type": "post",
+      "reference": "/2015/12/v-bellagio-bring-bikes-back-to-milan.html",
+      "image": "/assets/cover-5.jpg"
+    }
+  ]
+}
