@@ -5,3 +5,4 @@ button[title="Insert image"], button[title="Add Component"] {width:auto!importan
 button[title="Insert image"]::after, button[title="Add Component"]::after {content:"Insert image";font-size:14px;font-weight:600;}
 
 .ny-prepared {display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:14px 0;}.ny-prepared figure {margin:0;}.ny-prepared img {width:100%;height:180px;object-fit:contain;background:#eee;}.ny-prepared figcaption {font-size:12px;overflow-wrap:anywhere;margin-top:6px;}
+.ny-grid button{position:relative;min-height:130px;padding:0;overflow:hidden}.ny-grid button img{width:100%;height:150px;object-fit:contain;background:#f3f3f3}.ny-grid button span{display:block;font:12px/1.4 system-ui;padding:6px;overflow-wrap:anywhere;background:#fff}

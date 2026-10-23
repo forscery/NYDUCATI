@@ -19,3 +19,8 @@ fs.copyFileSync('node_modules/heic-to/LICENSE','public/admin/vendor/heic-to-LICE
 
 fs.copyFileSync('node_modules/turndown/dist/turndown.js','public/admin/vendor/turndown.js');
 fs.copyFileSync('node_modules/dompurify/dist/purify.min.js','public/admin/vendor/purify.js');
+
+// Bundle the free editor locally; no paid editor service or runtime CDN.
+const {build}=await import('esbuild');
+await build({entryPoints:['editor/writer.js'],bundle:true,format:'iife',outfile:'public/admin/writer.js',minify:true,target:'es2022'});
+fs.writeFileSync('public/admin/defaults.json',JSON.stringify(JSON.parse(fs.readFileSync('site.config.json')).articleDefaults||{}));

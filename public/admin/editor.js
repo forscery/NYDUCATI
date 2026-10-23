@@ -1,8 +1,9 @@
 (function(){
 const h=window.h;
+const {automaticSlug,resolvedStyle,scheduleInstant}=window.NYDUCATI.rules;
 CMS.registerPreviewStyle('/style.css');CMS.registerPreviewStyle('/admin/preview.css');
 function mediaNotice(data){const issues=(data.mediaIssues||[]).filter(i=>i.status!=='resolved');return issues.length?h('aside',{style:{background:'#fff5db',padding:'16px',border:'1px solid #bd8100'}},h('strong',{},'Media needs attention — editor only'),...issues.map((i,n)=>h('div',{key:i.id||n,style:{marginTop:'12px'}},h('b',{},i.filename||'Original filename unknown'),h('p',{},i.date||'Date unknown'),h('p',{},i.reason||'Review this media'),h('code',{style:{overflowWrap:'anywhere'}},i.source||'Original reference unavailable')))):null;}
-function Preview(props){const d=props.entry.get('data').toJS();const html=window.marked.parse(d.body||'');return h('div',{className:'editor-preview'},h('p',{className:'preview-note'},'Article preview · visual layout is approximate'),d.hero?.image?h('img',{className:'preview-hero',src:props.getAsset(d.hero.image).toString(),alt:''}):null,h('h1',{},d.title),h('p',{className:'preview-meta'},[d.publishedAt,d.author,...(d.tags||[])].filter(Boolean).join(' · ')),mediaNotice(d),d.kind==='journey'&&h('section',{},h('h2',{},d.sectionTitle||'Journey chapters'),h('ol',{},...(d.entries||[]).map((item,i)=>h('li',{key:i},item.label||item.reference||'Choose a post or page')))),h('article',{className:'prose'},props.widgetFor('body')),h('details',{},h('summary',{},'Generated HTML — read only'),h('p',{},'Edit the article with the visual / Markdown toggle. This shows its generated HTML.'),h('pre',{},h('code',{},html))));}
+function Preview(props){const d=props.entry.get('data').toJS();const html=window.marked.parse(d.body||'');return h('div',{className:'editor-preview content-layout '+(resolvedStyle(d.style,window.NYDUCATI.defaults).width==='wide'?'text-wide ':'')+(resolvedStyle(d.style,window.NYDUCATI.defaults).imageLayout==='wide'?'images-wide':'')},h('p',{className:'preview-note'},'Article preview · visual layout is approximate'),d.hero?.image?h('img',{className:'preview-hero',src:props.getAsset(d.hero.image).toString(),alt:''}):null,h('h1',{},d.title),h('p',{className:'preview-meta'},[d.publishedAt,d.author,...(d.tags||[])].filter(Boolean).join(' · ')),mediaNotice(d),d.kind==='journey'&&h('section',{},h('h2',{},d.sectionTitle||'Journey chapters'),h('ol',{},...(d.entries||[]).map((item,i)=>h('li',{key:i},item.label||item.reference||'Choose a post or page')))),h('article',{className:'prose content-body'},props.widgetFor('body')),h('details',{},h('summary',{},'Generated HTML'),h('p',{},'Use the writing toolbar’s HTML tab to edit code. Unsafe scripts are removed.'),h('pre',{},h('code',{},html))));}
 CMS.registerPreviewTemplate('posts',Preview);CMS.registerPreviewTemplate('pages',Preview);CMS.registerPreviewTemplate('journeys',Preview);
 // Use the current entry API shipped with our pinned Decap version.
 const today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');};
@@ -10,7 +11,7 @@ const slugify=value=>String(value||'').normalize('NFKD').replace(/[\u0300-\u036f
 function makePath(data,value=''){
  const input=String(value||'').trim();
  if(input.startsWith('/'))return input.endsWith('/')||input.endsWith('.html')?input:input+'/';
- const slug=slugify(input||data.title);
+ const slug=input?slugify(input):automaticSlug(data.title);
  if(!slug)return '';
  const date=/^\d{4}-\d{2}-\d{2}/.test(data.publishedAt||'')?data.publishedAt:today();
  if(data.kind==='journey')return '/journeys/'+slug+'/';
@@ -33,6 +34,7 @@ CMS.editor.onEditorChange(snapshot=>{
 CMS.registerEventListener({name:'preSave',handler:({entry})=>{
  let data=entry.get('data');if(!['post','page','journey'].includes(data.get('kind'))&&!data.get('path'))return data;
  const d=data.toJS();
+ if(d.schedule?.enabled){const at=scheduleInstant(d.schedule.local,d.schedule.zone);data=data.setIn(['schedule','at'],at);}
  if(Array.isArray(d.hero?.image))data=data.setIn(['hero','image'],d.hero.image[0]||'');
  if(Array.isArray(d.seo?.socialImage))data=data.setIn(['seo','socialImage'],d.seo.socialImage[0]||'');
  if(!d.publishedAt&&!d.metadataPending&&!d.originalPath)d.publishedAt=today();

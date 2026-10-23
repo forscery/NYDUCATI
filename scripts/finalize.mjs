@@ -1,6 +1,7 @@
+import {isPublic} from '../public/admin/content-rules.js';
 import fs from 'node:fs';import path from 'node:path';import {validPath,tagPath} from '../src/lib/model.mjs';
-const posts=fs.readdirSync('content/posts').filter(f=>f.endsWith('.json')).map(f=>JSON.parse(fs.readFileSync('content/posts/'+f,'utf8'))).filter(p=>!p.draft);
-const journeyPosts=fs.readdirSync('content/journeys').filter(f=>f.endsWith('.json')).map(f=>JSON.parse(fs.readFileSync('content/journeys/'+f))).filter(p=>!p.draft);
+const posts=fs.readdirSync('content/posts').filter(f=>f.endsWith('.json')).map(f=>JSON.parse(fs.readFileSync('content/posts/'+f,'utf8'))).filter(p=>isPublic(p));
+const journeyPosts=fs.readdirSync('content/journeys').filter(f=>f.endsWith('.json')).map(f=>JSON.parse(fs.readFileSync('content/journeys/'+f))).filter(p=>isPublic(p));
 posts.push(...journeyPosts);
 const routes=new Set(posts.map(p=>p.path)),aliases=new Set(),redirects=[];
 for(const p of posts){

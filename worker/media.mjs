@@ -38,9 +38,9 @@ export async function handleMedia(request,env,fetcher=fetch){
   }
   const query=(url.searchParams.get('q')||'').toLowerCase();let cursor=url.searchParams.get('cursor')||undefined,files=[],pages=0;
   do {const result=await env.MEDIA.list({prefix:'images/',limit:48,cursor,include:['customMetadata']});
-   files.push(...result.objects.filter(o=>!query||(o.customMetadata?.originalName||o.key).toLowerCase().includes(query)).map(o=>({url:url.origin+'/media/'+o.key,name:o.customMetadata?.originalName||o.key.split('/').pop(),size:o.size})));
+   files.push(...result.objects.filter(o=>url.searchParams.get('all')==='1'||!['large','thumb'].includes(o.customMetadata?.variant)).filter(o=>!query||(o.customMetadata?.originalName||o.key).toLowerCase().includes(query)).map(o=>({url:url.origin+'/media/'+o.key,name:o.customMetadata?.originalName||o.key.split('/').pop(),size:o.size,full:o.customMetadata?.full||undefined,thumbnail:o.customMetadata?.thumbnail||undefined})));
    cursor=result.truncated?result.cursor:undefined;pages++;
-  }while(query&&cursor&&files.length<48&&pages<10);
+  }while(cursor&&files.length<48&&pages<10);
   return json({files,cursor:cursor||null});
  }
  if(Number(request.headers.get('Content-Length'))>MAX)return json({error:'Image exceeds 20 MB.'},413);
@@ -52,6 +52,8 @@ export async function handleMedia(request,env,fetcher=fetch){
  const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),n=>n.toString(16).padStart(2,'0')).join('');
  const name=(url.searchParams.get('name')||'photo').replace(/\.[^.]+$/,'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,90)||'photo';
  const key=`images/${name}-${digest}.${type[1]}`;
- await env.MEDIA.put(key,bytes,{httpMetadata:{contentType:type[0]},customMetadata:{originalName:(url.searchParams.get('name')||name).slice(0,200)}});
+ const related=value=>{try{const u=new URL(value);return u.origin===url.origin&&/^\/media\/images\/[a-z0-9-]+-[a-f0-9]{64}\.(jpg|png|webp|gif|avif)$/.test(u.pathname)?u.href:'';}catch{return '';}};
+ const variant=['large','thumb','reading'].includes(url.searchParams.get('variant'))?url.searchParams.get('variant'):'';
+ await env.MEDIA.put(key,bytes,{httpMetadata:{contentType:type[0]},customMetadata:{variant,full:related(url.searchParams.get('full')),thumbnail:related(url.searchParams.get('thumbnail')),originalName:(url.searchParams.get('name')||name).slice(0,200)}});
  return json({url:url.origin+'/media/'+key,size,contentType:type[0]},201);
 }

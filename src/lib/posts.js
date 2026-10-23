@@ -1,10 +1,11 @@
+import {isPublic,excerptOf} from '../../public/admin/content-rules.js';
 import {enhanceArticle} from './article-media.mjs';
 import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
 import { validPath, listed, newest, monthOf, tagPath } from './model.mjs';
 import history from '../generated/history.json';
 const files = import.meta.glob('../../content/posts/*.json', { eager:true, import:'default' });
-export const hiddenPaths=Object.values(files).filter(p=>p.draft).map(p=>p.path);
+export const hiddenPaths=Object.values(files).filter(p=>!isPublic(p)).map(p=>p.path);
 const paths=new Set();
 const posts=Object.entries(files).map(([file,data])=>{
  const p={...data,kind:data.kind||'post',tags:[...new Set((data.tags||[]).flatMap(t=>String(t).split(/[,\n]+/)).map(t=>t.trim()).filter(Boolean))]};
@@ -13,10 +14,10 @@ const posts=Object.entries(files).map(([file,data])=>{
  if(!validPath(p.path)||paths.has(p.path))throw new Error('Invalid or duplicate content URL: '+p.path);paths.add(p.path);
  if(p.publishedAt&&!/^\d{4}-\d{2}-\d{2}(?:T.*)?$/.test(p.publishedAt))throw new Error('Invalid publication date: '+p.title);
  if(p.publishedAt && Number.isNaN(Date.parse(p.publishedAt)))throw new Error('Invalid publication date: '+p.title);
- p.history=history[file.split('/').pop()];p.sourceBody=p.body;
- p.body=enhanceArticle(sanitizeHtml(p.format==='html'?p.body:marked.parse(p.body||''),{allowedTags:sanitizeHtml.defaults.allowedTags.concat(['img','figure','figcaption']),allowedAttributes:{...sanitizeHtml.defaults.allowedAttributes,img:['src','alt','title','width','height','loading','data-full','data-thumb'],a:['href','title','target','rel','data-plain'],figure:['data-social']},allowedSchemes:['http','https','mailto'],transformTags:{img:(_tag,attribs)=>({tagName:'img',attribs:{...attribs,loading:'lazy',decoding:'async'}})}}));
+ p.excerpt=excerptOf(p);p.history=history[file.split('/').pop()];p.sourceBody=p.body;
+ p.body=enhanceArticle(sanitizeHtml(p.format==='html'?p.body:marked.parse(p.body||''),{allowedTags:sanitizeHtml.defaults.allowedTags.concat(['img','figure','figcaption']),allowedAttributes:{...sanitizeHtml.defaults.allowedAttributes,img:['src','alt','title','width','height','loading','data-full','data-thumb'],a:['href','title','target','rel','data-plain'],figure:['data-social','data-ratio'],hr:['data-read-more'],'*':['style'],td:['colspan','rowspan'],th:['colspan','rowspan']},allowedStyles:{'*':{'text-align':[/^(left|right|center|justify)$/]}},allowedSchemes:['http','https','mailto'],transformTags:{img:(_tag,attribs)=>({tagName:'img',attribs:{...attribs,loading:'lazy',decoding:'async'}})}}));
  return p;
-}).filter(p=>!p.draft);
+}).filter(p=>isPublic(p));
 export const feed=posts.filter(listed).sort(newest);
 export const tags=[...new Set(feed.flatMap(p=>p.tags))].sort((a,b)=>a.localeCompare(b));
 export const months=[...new Set(feed.map(monthOf).filter(Boolean))].sort().reverse();

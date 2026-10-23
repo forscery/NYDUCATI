@@ -12,3 +12,6 @@ public/admin/decap-cms.js
 public/admin/vendor/
 
 src/generated/history.json
+
+public/admin/writer.js
+public/admin/defaults.json

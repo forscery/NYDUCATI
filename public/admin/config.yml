@@ -20,6 +20,9 @@ collections:
       - label: Drafts
         field: draft
         pattern: true
+      - label: Published / scheduled
+        field: draft
+        pattern: false
     fields:
       - name: title
         label: Title
@@ -59,6 +62,10 @@ collections:
           Defaults to today for new posts. Adjust to backdate a post; its automatic URL follows the year and
           month. Imported blank dates remain unchanged.
         default: '{{now}}'
+      - name: schedule
+        label: Scheduled publication
+        widget: ny-schedule
+        required: false
       - name: publishedMonth
         label: Original archive month
         widget: hidden
@@ -76,6 +83,7 @@ collections:
         label: Excerpt
         widget: text
         required: false
+        hint: Optional summary override. Otherwise use text before a read-more break, or the first 220 characters.
       - name: draft
         label: Unpublished — exclude from website
         widget: boolean
@@ -122,6 +130,11 @@ collections:
             max: 0.85
             step: 0.05
             default: 0.55
+          - name: titleEmphasis
+            label: Italic words in headline
+            widget: string
+            required: false
+            hint: Enter the exact words from the title to italicize.
       - name: seo
         label: SEO overrides
         widget: object
@@ -155,16 +168,20 @@ collections:
             label: Text width
             widget: select
             options:
+              - inherit
               - standard
               - wide
-            default: standard
+            default: inherit
+            hint: 'Standard: 760 px. Wide: 1000 px. Inherit uses site defaults.'
           - name: imageLayout
             label: Image width
             widget: select
             options:
+              - inherit
               - standard
               - wide
-            default: standard
+            default: inherit
+            hint: Standard follows text. Wide images can extend to 1200 px on large screens.
       - name: mediaIssues
         label: Media needing attention (editor only)
         widget: list
@@ -254,6 +271,12 @@ collections:
       value: post
     preview_path: '{{fields.path}}'
     preview_path_preserve_slashes: true
+    view_groups:
+      - label: Tags
+        field: tags
+      - label: Publication year
+        field: publishedAt
+        pattern: \d{4}
   - folder: content/posts
     create: true
     extension: json
@@ -267,6 +290,9 @@ collections:
       - label: Drafts
         field: draft
         pattern: true
+      - label: Published / scheduled
+        field: draft
+        pattern: false
     fields:
       - name: title
         label: Title
@@ -306,6 +332,10 @@ collections:
           Defaults to today for new posts. Adjust to backdate a post; its automatic URL follows the year and
           month. Imported blank dates remain unchanged.
         default: '{{now}}'
+      - name: schedule
+        label: Scheduled publication
+        widget: ny-schedule
+        required: false
       - name: publishedMonth
         label: Original archive month
         widget: hidden
@@ -323,6 +353,7 @@ collections:
         label: Excerpt
         widget: text
         required: false
+        hint: Optional summary override. Otherwise use text before a read-more break, or the first 220 characters.
       - name: draft
         label: Unpublished — exclude from website
         widget: boolean
@@ -369,6 +400,11 @@ collections:
             max: 0.85
             step: 0.05
             default: 0.55
+          - name: titleEmphasis
+            label: Italic words in headline
+            widget: string
+            required: false
+            hint: Enter the exact words from the title to italicize.
       - name: seo
         label: SEO overrides
         widget: object
@@ -402,16 +438,20 @@ collections:
             label: Text width
             widget: select
             options:
+              - inherit
               - standard
               - wide
-            default: standard
+            default: inherit
+            hint: 'Standard: 760 px. Wide: 1000 px. Inherit uses site defaults.'
           - name: imageLayout
             label: Image width
             widget: select
             options:
+              - inherit
               - standard
               - wide
-            default: standard
+            default: inherit
+            hint: Standard follows text. Wide images can extend to 1200 px on large screens.
       - name: mediaIssues
         label: Media needing attention (editor only)
         widget: list
@@ -501,6 +541,12 @@ collections:
       value: page
     preview_path: '{{fields.path}}'
     preview_path_preserve_slashes: true
+    view_groups:
+      - label: Tags
+        field: tags
+      - label: Publication year
+        field: publishedAt
+        pattern: \d{4}
   - name: journeys
     label: Journeys
     label_singular: Journey
@@ -548,6 +594,10 @@ collections:
           Defaults to today for new posts. Adjust to backdate a post; its automatic URL follows the year and
           month. Imported blank dates remain unchanged.
         default: '{{now}}'
+      - name: schedule
+        label: Scheduled publication
+        widget: ny-schedule
+        required: false
       - name: author
         label: Author
         widget: string
@@ -561,6 +611,7 @@ collections:
         label: Excerpt
         widget: text
         required: false
+        hint: Optional summary override. Otherwise use text before a read-more break, or the first 220 characters.
       - name: draft
         label: Unpublished — exclude from website
         widget: boolean
@@ -595,6 +646,11 @@ collections:
             max: 0.85
             step: 0.05
             default: 0.55
+          - name: titleEmphasis
+            label: Italic words in headline
+            widget: string
+            required: false
+            hint: Enter the exact words from the title to italicize.
       - name: seo
         label: SEO overrides
         widget: object
@@ -628,16 +684,20 @@ collections:
             label: Text width
             widget: select
             options:
+              - inherit
               - standard
               - wide
-            default: standard
+            default: inherit
+            hint: 'Standard: 760 px. Wide: 1000 px. Inherit uses site defaults.'
           - name: imageLayout
             label: Image width
             widget: select
             options:
+              - inherit
               - standard
               - wide
-            default: standard
+            default: inherit
+            hint: Standard follows text. Wide images can extend to 1200 px on large screens.
       - name: body
         label: Journey introduction — visual / Markdown
         widget: ny-writer
@@ -737,6 +797,19 @@ collections:
         hint: >-
           These are references, not copies. Editing a linked page changes it everywhere. Draft content is
           omitted from the published journey.
+    view_filters:
+      - label: Drafts
+        field: draft
+        pattern: true
+      - label: Published / scheduled
+        field: draft
+        pattern: false
+    view_groups:
+      - label: Tags
+        field: tags
+      - label: Publication year
+        field: publishedAt
+        pattern: \d{4}
   - name: settings
     label: Site settings
     files:
@@ -912,6 +985,62 @@ collections:
               - title
             required: false
             hint: Select a Journey here. Edit its content in the Journeys collection.
+          - name: articleDefaults
+            label: Default article layout
+            widget: object
+            required: false
+            fields:
+              - name: width
+                label: Text width
+                widget: select
+                options:
+                  - standard
+                  - wide
+                default: standard
+              - name: imageLayout
+                label: Image width
+                widget: select
+                options:
+                  - standard
+                  - wide
+                default: standard
+          - name: analytics
+            label: Analytics and verification
+            widget: object
+            required: false
+            fields:
+              - name: enabled
+                label: Enable tracking on production domains only
+                widget: boolean
+                default: false
+              - name: hosts
+                label: Production hostnames
+                widget: list
+                default:
+                  - www.nyducati.com
+                  - nyducati.com
+                hint: No https:// prefix. Preview hosts will not send analytics.
+              - name: ga4
+                label: GA4 measurement ID
+                widget: string
+                required: false
+                pattern:
+                  - ^$|^G-[A-Z0-9]+$
+                  - Use G-…
+              - name: gtm
+                label: Google Tag Manager ID (takes precedence over GA4)
+                widget: string
+                required: false
+                pattern:
+                  - ^$|^GTM-[A-Z0-9]+$
+                  - Use GTM-…
+                hint: >-
+                  Configure GA4 and other analytics tools inside this container. Do not duplicate the same
+                  tag.
+              - name: searchConsole
+                label: Google Search Console verification token
+                widget: string
+                required: false
 media_library:
   name: nyducati-r2
 display_url: https://nyducati.hidden-silence-47e4.workers.dev

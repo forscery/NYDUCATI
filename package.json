@@ -9,10 +9,15 @@
     "postbuild": "node scripts/finalize.mjs",
     "prebuild": "node scripts/prepare-cms.mjs && node scripts/prepare-history.mjs",
     "predev": "node scripts/prepare-cms.mjs && node scripts/prepare-history.mjs",
-    "test": "node scripts/check-search.mjs && node scripts/check-auth.mjs && node scripts/check-cms.mjs && node scripts/check-location.mjs && node scripts/check-authoring.mjs && node scripts/check-image-conversion.mjs && node scripts/check-migration.mjs && node scripts/check-google-photos.mjs && node scripts/check-google-picker-ui.mjs && node scripts/check-cms-batch.mjs",
+    "test": "node scripts/check-search.mjs && node scripts/check-auth.mjs && node scripts/check-cms.mjs && node scripts/check-location.mjs && node scripts/check-authoring.mjs && node scripts/check-image-conversion.mjs && node scripts/check-migration.mjs && node scripts/check-google-photos.mjs && node scripts/check-google-picker-ui.mjs && node scripts/check-cms-batch.mjs && node scripts/check-editor-upgrade.mjs && node scripts/check-journeys.mjs && node scripts/check-browser-controls.mjs",
     "media:estimate": "node scripts/media-cost.mjs"
   },
   "dependencies": {
+    "@tiptap/core": "3.32.0",
+    "@tiptap/extension-image": "3.32.0",
+    "@tiptap/extension-table": "3.32.0",
+    "@tiptap/extension-text-align": "3.32.0",
+    "@tiptap/starter-kit": "3.32.0",
     "astro": "7.4.1",
     "decap-cms": "3.17.1",
     "heic-to": "1.6.6",
@@ -21,5 +26,9 @@
     "sanitize-html": "2.18.1",
     "sharp": "0.35.5",
     "turndown": "7.2.4"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "jsdom": "30.1.3"
   }
 }
