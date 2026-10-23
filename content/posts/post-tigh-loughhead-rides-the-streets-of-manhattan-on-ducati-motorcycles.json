@@ -7,8 +7,8 @@
   "author": "Tigh Loughhead",
   "order": 100,
   "style": {
-    "width": "standard",
-    "imageLayout": "standard"
+    "width": "wide",
+    "imageLayout": "wide"
   },
   "kind": "post",
   "location": {
@@ -24,7 +24,7 @@
   "title": "Tigh Loughhead Rides the Streets of Manhattan on Ducati Motorcycles",
   "hero": {
     "titleColor": "white",
-    "position": "center",
+    "position": "top",
     "overlay": 0.55,
     "image": "https://nyducati.hidden-silence-47e4.workers.dev/media/images/mik00040-large-50507424379b332ab38d9618acdd92d9bd5f380c615c6576dc2f3de4b21d2617.webp"
   },
